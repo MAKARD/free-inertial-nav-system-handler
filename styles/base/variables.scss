@@ -1,0 +1,67 @@
+/**
+  Variables
+ */
+
+/**
+ * Susy breakpoints
+ */
+$portrait: (min-width 1px) (max-aspect-ratio '13 / 9');
+$landscape: (min-width 1px) (min-aspect-ratio '13 / 9');
+
+// Mobile
+$iphone4-p:(max-width 320px) (max-height 480px);
+$iphone4-l:(max-width 480px) (max-height 320px);
+$iphone5-p:(max-width 320px) (max-height 568px);
+$iphone5-l:(max-width 568px) (max-height 320px);
+$mobile: (max-width 47.938em);
+$mobile-p: (max-width 47.938em) (max-aspect-ratio '13 / 9');
+$mobile-l: (max-width 47.938em) (min-aspect-ratio '13 / 9');
+
+// Tablet
+$tablet: (min-width 48em) (max-width 64em);
+$tablet-p: (min-width 48em) (max-width 1023px);
+$tablet-l: (min-width 1024px) (max-width 1024px);
+
+// Laptop
+$laptop: (min-width 1025px) (max-width 1440px);
+$laptop-not-large: (min-width 1025px) (max-width 1439px) (max-height 899px);
+$laptop-small: (min-width 1025px) (max-width 1279px);
+$laptop-medium: (min-width 1280px) (max-width 1280px);
+$laptop-large: (min-width 1281px) (max-width 1440px) (min-height 900px);
+
+// Mobile & laptop
+$mobile-tablet: $mobile, $tablet;
+
+// Tablet & laptop
+$tablet-laptop: $tablet, $laptop-not-large;
+
+// Fonts
+$font-primary: 'Proxima Nova Regular', sans-serif;
+
+// Colors
+$color-primary: #696969;
+$color-secondary: #ffc60a;
+
+/**
+  Z-index
+ */
+// z-index: map-get($zindex, ...);
+$zindex: (
+        preloader       : 1100,
+        modal           : 1000,
+        overlay         : 900,
+        hamburger       : 800,
+        responsive-nav  : 700,
+        popup           : 600,
+        header          : 500,
+        footer          : 400,
+        dropdown        : 300,
+        aside           : 200,
+);
+
+$under-zindex: -1;
+
+// Cols number
+$cols-number-mob: 3;
+$cols-number-tabletp: 2;
+$cols-number-tabletl: 4;

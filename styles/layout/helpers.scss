@@ -1,0 +1,53 @@
+/*
+* Helpers
+ */
+
+// Text classes
+.text_left {
+  text-align: left;
+}
+
+.text_right {
+  text-align: right;
+}
+
+.text_center {
+  text-align: center;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no_wrap {
+  white-space: nowrap;
+}
+
+.text_bold {
+  font-weight: bold;
+}
+
+.text_semibold {
+  font-weight: 600;
+}
+
+.text_upper {
+  text-transform: uppercase;
+}
+
+// Floats
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+// Hidden
+.hidden {
+
+  display: none !important;
+}
