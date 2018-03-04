@@ -8,32 +8,8 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const debug = process.env.NODE_ENV !== "production";
-const env = debug ? "local" : "production";
-
-const isAppBuilding = process.env.NODE_MODE === "process";
-console.log(`Building ${process.env.NODE_MODE}`);
-console.log(`Running in ${env} environment`);
-
-const remote = debug
-    ? "http://localhost:8089"
-    : `file://${path.resolve("./build/renderer/index.html")}`;
-
-const output = isAppBuilding
-    ? {
-        filename: "entry.js",
-        path: path.resolve("./build/process"),
-        publicPath: "./",
-    }
-    : {
-        filename: "[name].[hash:6].js",
-        path: path.resolve("./build/renderer"),
-        publicPath: "./",
-    };
-
-const target = isAppBuilding
-    ? { target: "electron" }
-    : {};
+const debug = process.env.NODE_ENV !== "prod";
+console.log(`Running in ${process.env.NODE_ENV} environment`);
 
 const babelEnvLoaderPlugins = [
     "transform-object-rest-spread",
@@ -49,7 +25,7 @@ const babelEnvLoaderPlugins = [
 const config = {
     entry: [
         "babel-regenerator-runtime",
-        isAppBuilding ? "./src/process/entry.ts" : "./src/renderer/index.tsx"
+        "./src/renderer/index.tsx"
     ],
     devServer: {
         historyApiFallback: true,
@@ -64,8 +40,11 @@ const config = {
             colors: true
         }
     },
-    output,
-    ...target,
+    output: {
+        filename: "[name].[hash:6].js",
+        path: path.resolve("./build/renderer"),
+        publicPath: "./",
+    },
 
     devtool: debug ? "source-map" : false,
 
@@ -182,24 +161,9 @@ const config = {
         new webpack.NodeEnvironmentPlugin(),
         new webpack.DefinePlugin({
             "process.env": {
-                "NODE_ENV": JSON.stringify(env),
-                "remote": JSON.stringify(remote)
+                "NODE_ENV": JSON.stringify(process.env.NODE_ENV)
             },
-        })
-    ]
-};
-
-const imagesLoaders = [
-    {
-        loader: "file-loader",
-        query: {
-            name: "[name].[hash:6].[ext]",
-        },
-    },
-];
-
-if (!isAppBuilding) {
-    config.plugins.push(
+        }),
         new ExtractTextPlugin({
             filename: "styles.[hash:6].css",
             publicPath: "/",
@@ -216,8 +180,17 @@ if (!isAppBuilding) {
                 collapseWhitespace: !debug,
             }
         })
-    );
-}
+    ]
+};
+
+const imagesLoaders = [
+    {
+        loader: "file-loader",
+        query: {
+            name: "[name].[hash:6].[ext]",
+        },
+    },
+];
 
 if (debug) {
     config.plugins.push(
@@ -225,7 +198,7 @@ if (debug) {
     );
 } else {
     config.plugins.push(
-        new CleanWebpackPlugin([path.resolve(`./build/${process.env.NODE_MODE}`)]),
+        new CleanWebpackPlugin([path.resolve("./build")]),
         new UglifyJsPlugin({
             parallel: true,
             cache: true,
@@ -239,6 +212,12 @@ if (debug) {
                 compress: true,
                 warnings: false
             }
+        }),
+        new CriticalPlugin({
+            src: "index.html",
+            inline: true,
+            minify: true,
+            dest: "index.html"
         })
     );
     imagesLoaders.push(
@@ -270,17 +249,6 @@ if (debug) {
             },
         }
     );
-}
-
-if (!debug && !isAppBuilding) {
-    config.plugins.push(
-        new CriticalPlugin({
-            src: "index.html",
-            inline: true,
-            minify: true,
-            dest: "index.html"
-        })
-    )
 }
 
 config.module.loaders.push(

@@ -4,6 +4,4 @@ node_modules/
 /build
 /coverage
 /.nyc*
-/Electron app*
-src/**/*.js
-src/**/*.js.map
+/free-inertial-nav-system-handler*
