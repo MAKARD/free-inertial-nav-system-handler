@@ -5,16 +5,9 @@ const DevSerialPort = require("serialport/test");
 
 const config = require(`../../config/config.${process.env.NODE_ENV}`);
 
+const portsController = require("./controllers/portsController");
+
 DevSerialPort.Binding.createPort("/dev/ROBOT", { echo: true, record: true });
-SerialPort.list((err, ports) => {
-    const port = new SerialPort(ports[0].comName);
-
-    port.write("test message");
-
-    port.on("data", (message) => {
-        console.log(Buffer.from(message).toString());
-    });
-});
 
 let mainWindow;
 const createWindow = () => {
@@ -27,6 +20,12 @@ const createWindow = () => {
 
     mainWindow.on("closed", () => {
         mainWindow = undefined;
+    });
+
+    mainWindow.webContents.on("did-finish-load", () => {
+        portsController(mainWindow.webContents);
+
+        mainWindow.webContents.send("ready");
     });
 }
 
