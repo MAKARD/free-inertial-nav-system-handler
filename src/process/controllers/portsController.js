@@ -1,38 +1,57 @@
 const { ipcMain } = require("electron");
 const SerialPort = require("serialport");
 
-let port;
 module.exports = (webContents) => {
-    ipcMain.once("available-ports", () => {
-        let portsList;
+    let port = {
+        isOpen: false
+    };
+
+    // remove on prod
+    let timer;
+
+    const availablePorts = (event) => {
         SerialPort.list((error, ports) => {
-            portsList = ports;
-        }).then(() => {
-            webContents.send("available-ports", portsList);
+            event.returnValue = ports;
         });
-    });
+    };
 
-    ipcMain.on("open-port", (event, portName) => {
-        port && port.isOpen && port.close();
-       if (port && port.isOpen) {
-           console.log(port.path)
-       }
+    const closePort = () => {
+        port.isOpen && port.close(() => {
+            // remove on prod
+            clearInterval(timer);
+        });
+    };
+
+    const createBridge = (event, portName) => () => {
         port = new SerialPort(portName);
-    });
+        /*
+         remove on prod, replace with
+         port.on("data", (message) => {
+             webContents.send("listen-port", Buffer.from(message).toString());
+         });
+        */
+        clearInterval(timer);
+        timer = setInterval(() => {
+            event.sender.send("listen-port", Buffer.from("message").toString());
+        }, 2000);
+    };
 
-    ipcMain.on("listen-port", (event) => {
-        if (!port || !port.isOpen) {
-            return webContents.send("listen-port", { error: "Port not opened" });
+    const openPort = (event, portName) => {
+        if (!portName) {
+            return;
         }
 
-        setInterval(() => {
-            port.write("test", (error) => {
-                error && webContents.send("listen-port", { error });
-            });
-        }, 1000);
+        if (port.isOpen) {
+            return port.close(createBridge(event, portName));
+        }
 
-        port.on("data", (message) => {
-            webContents.send("listen-port", Buffer.from(message).toString());
-        });
-    });
+        createBridge(event, portName)();
+    }
+
+    ipcMain.on("available-ports", availablePorts);
+
+    ipcMain.on("close-port", closePort);
+
+    ipcMain.on("open-port", openPort);
+
 };
