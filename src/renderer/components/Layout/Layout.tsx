@@ -1,8 +1,9 @@
 import * as React from "react";
 import { ipcRenderer } from "electron";
 
-import { LayoutProps, LayoutPropTypes } from "./LayoutProps"
 import { Ports } from "../Ports";
+
+import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
 
 export interface LayoutState {
     isReady: boolean;
@@ -16,7 +17,7 @@ export class Layout extends React.Component<LayoutProps> {
     }
 
     public async componentWillMount() {
-        ipcRenderer.on("ready", () => {
+        ipcRenderer.once("ready", () => {
             this.setState({
                 isReady: true
             });

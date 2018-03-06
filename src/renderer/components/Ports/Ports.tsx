@@ -3,6 +3,7 @@ import Select from "react-select";
 import { ipcRenderer } from "electron";
 
 import { ipcRequests } from "../../data/ipcRequests";
+import { DevMode } from "./DevMode";
 
 export interface PortInterface {
     pnpId?: string;
@@ -28,16 +29,7 @@ export class Ports extends React.Component {
     };
 
     public componentDidMount() {
-        const ports = ipcRenderer.sendSync(ipcRequests.availablePorts);
-        if (!ports[0] || !ports[0].comName) {
-            return;
-        }
-
-        this.setState({
-            ports,
-            selectedPort: ports[0].comName
-        });
-
+        this.fetchPortsList();
         ipcRenderer.on(ipcRequests.listenPort, this.handleListenPort);
     }
 
@@ -52,6 +44,12 @@ export class Ports extends React.Component {
                 <this.AvailablePorts />
                 <button
                     type="button"
+                    onClick={this.fetchPortsList}
+                >
+                    Refresh ports list
+                </button>
+                <button
+                    type="button"
                     onClick={this.handleStartListenPort}
                     disabled={!this.state.selectedPort || this.state.isListening}
                 >
@@ -64,8 +62,21 @@ export class Ports extends React.Component {
                 >
                     Stop listen
                 </button>
+                <DevMode />
             </div>
         );
+    }
+
+    protected fetchPortsList = (): void => {
+        const ports = ipcRenderer.sendSync(ipcRequests.availablePorts);
+        if (!ports[0] || !ports[0].comName) {
+            return;
+        }
+
+        this.setState({
+            ports,
+            selectedPort: ports[0].comName
+        });
     }
 
     protected handleStartListenPort = (): void => {

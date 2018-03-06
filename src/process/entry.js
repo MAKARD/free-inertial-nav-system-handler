@@ -1,15 +1,8 @@
 const { app, BrowserWindow } = require("electron");
 
-const SerialPort = require("serialport");
-// remove on prod
-const DevSerialPort = require("serialport/test");
-
 const config = require(`../../config/config.${process.env.NODE_ENV}`);
 
-const portsController = require("./controllers/portsController");
-
-// remove on prod
-DevSerialPort.Binding.createPort("/dev/ROBOT", { echo: true, record: true });
+const PortsController = require("./controllers/PortsController");
 
 let mainWindow;
 const createWindow = () => {
@@ -18,17 +11,21 @@ const createWindow = () => {
         height: 500
     });
 
+    const portsController = new PortsController();
+
     mainWindow.loadURL(config.rendererUrl);
 
     mainWindow.on("closed", () => {
         mainWindow = undefined;
     });
 
-    mainWindow.webContents.on("did-finish-load", () => {
-        portsController(mainWindow.webContents);
-
+    mainWindow.webContents.once("did-finish-load", () => {
+        portsController.bindEvents();
+        
         mainWindow.webContents.send("ready");
     });
+
+    mainWindow.webContents.openDevTools();
 }
 
 app.on("ready", createWindow);
