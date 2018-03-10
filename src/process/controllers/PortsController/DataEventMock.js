@@ -1,17 +1,17 @@
 const DataEventMock = function () {
     this.timer;
 
-    this.startEvent = (event, delay) => {
+    this.startEvent = (port, delay) => {
         if (typeof delay !== "number") {
             throw Error("Delay must be number");
         }
 
-        if (!event || !event.sender || (typeof event.sender.send !== "function")) {
-            throw Error("Event is invalid object");
+        if (!port || !port.write) {
+            throw Error("Port is invalid");
         }
 
         this.timer = setInterval(() => {
-            event.sender.send("listen-port", Buffer.from("message").toString());
+            port.write(new Date().toString());
         }, delay);
     }
 

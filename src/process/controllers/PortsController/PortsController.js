@@ -13,15 +13,15 @@ SerialPort.MockBinding = require("serialport/test").Binding;
 SerialPort.Binding = SerialPort.originBinding;
 
 const PortsController = function () {
-    this.port = {
+    port = {
         isOpen: false
     };
 
-    this.devMode = false;
-    this.DataEventMock = new (require("./DataEventMock"))();
+    devMode = false;
+    DataEventMock = new (require("./DataEventMock"))();
 
-    this.toggleDevMode = (event, state) => {
-        this.devMode = state;
+    toggleDevMode = (event, state) => {
+        devMode = state;
 
         if (state) {
             SerialPort.Binding = SerialPort.MockBinding;
@@ -32,50 +32,56 @@ const PortsController = function () {
         }
     }
 
-    this.availablePorts = (event) => {
+    availablePorts = (event) => {
         SerialPort.list((error, ports) => {
             event.returnValue = ports;
         });
     };
 
-    this.closePort = () => {
-        this.port.isOpen && this.port.close(() => {
-            this.devMode && this.DataEventMock.stopEvent();
+    closePort = () => {
+        port.isOpen && port.close(() => {
+            devMode && DataEventMock.stopEvent();
+
+            port.removeListener("data", sendData);
         });
     };
 
-    this.createBridge = (event, newPort) => () => {
-        this.port = newPort;
+    createBridge = (event, newPort) => () => {
+        port = newPort;
 
-        this.port.open(() => {
-            this.devMode && this.DataEventMock.startEvent(event, 2000);
+        port.open(() => {
+            devMode && DataEventMock.startEvent(port, 2000);
 
-            this.port.once("data", (data) => {
-                event.sender.send("listen-port", Buffer.from(data).toString());
-            });
+            port.on("data", sendData(event));
         });
     };
 
-    this.openPort = (event, portName) => {
+    sendData = (event) => (data) => {
+        event.sender.send("listen-port", Buffer.from(data).toString());
+    }
+
+    openPort = (event, portName) => {
         if (!portName) {
             return;
         }
 
-        const newPort = new SerialPort(portName, { autoOpen: false });
+        const newPort = new SerialPort(portName, { echo: true, autoOpen: false });
 
-        if (this.port.isOpen) {
-            return this.port.close(this.createBridge(event, newPort));
+        if (port.isOpen) {
+            return port.close(createBridge(event, newPort));
         }
 
-        this.createBridge(event, newPort)();
+        createBridge(event, newPort)();
     };
 
     this.bindEvents = () => {
-        ipcMain.on("available-ports", this.availablePorts);
-        ipcMain.on("dev-mode", this.toggleDevMode);
-        ipcMain.on("close-port", this.closePort);
-        ipcMain.on("open-port", this.openPort);
+        ipcMain.on("available-ports", availablePorts);
+        ipcMain.on("dev-mode", toggleDevMode);
+        ipcMain.on("close-port", closePort);
+        ipcMain.on("open-port", openPort);
     };
+
+    this.unbindEvents = ipcMain.removeAllListeners;
 };
 
 module.exports = PortsController;
