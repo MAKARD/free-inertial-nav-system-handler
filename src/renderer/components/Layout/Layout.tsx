@@ -1,9 +1,8 @@
 import * as React from "react";
 import { ipcRenderer } from "electron";
 
-import { Ports } from "../Ports";
-
 import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
+import { Header } from "./Partials";
 
 export interface LayoutState {
     isReady: boolean;
@@ -30,9 +29,9 @@ export class Layout extends React.Component<LayoutProps> {
         }
 
         return (
-            <React.Fragment>
-                <Ports />
-            </React.Fragment>
+            <div>
+                <Header />
+            </div>
         );
     }
 }

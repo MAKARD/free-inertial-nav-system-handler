@@ -18,7 +18,7 @@ const PortsController = function () {
     };
 
     this.devMode = false;
-    this.DataEventMock =  new (require("./DataEventMock"))();
+    this.DataEventMock = new (require("./DataEventMock"))();
 
     this.toggleDevMode = (event, state) => {
         this.devMode = state;
@@ -40,7 +40,7 @@ const PortsController = function () {
 
     this.closePort = () => {
         this.port.isOpen && this.port.close(() => {
-           this.DataEventMock.stopEvent();
+            this.devMode && this.DataEventMock.stopEvent();
         });
     };
 
@@ -61,9 +61,7 @@ const PortsController = function () {
             return;
         }
 
-        const newPort = this.devMode
-            ? new SerialPort(portName, { echo: true, autoOpen: false })
-            : new SerialPort(portName, { autoOpen: false });
+        const newPort = new SerialPort(portName, { autoOpen: false });
 
         if (this.port.isOpen) {
             return this.port.close(this.createBridge(event, newPort));
