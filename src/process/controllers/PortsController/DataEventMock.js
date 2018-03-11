@@ -1,5 +1,15 @@
+const mockRowData = require("../../data/DataMock.json");
+
 const DataEventMock = function () {
-    this.timer;
+    let timer;
+    let iterator = 0;
+    /*
+        One premise contains data from 3 sensors
+        Example data must be according formatted
+     */
+    const formattedData = mockRowData
+        .map((e, i) => i % 3 ? null : mockRowData.slice(i, i + 3))
+        .filter((e) => !!e);
 
     this.startEvent = (port, delay) => {
         if (typeof delay !== "number") {
@@ -10,13 +20,18 @@ const DataEventMock = function () {
             throw Error("Port is invalid");
         }
 
-        this.timer = setInterval(() => {
-            port.write(new Date().toString());
+        if (iterator === formattedData.length) {
+            iterator = 0;
+        }
+
+        timer = setInterval(() => {
+            port.write(JSON.stringify(formattedData[iterator]));
+            iterator++;
         }, delay);
     }
 
     this.stopEvent = () => {
-        clearInterval(this.timer);
+        clearInterval(timer);
     }
 }
 

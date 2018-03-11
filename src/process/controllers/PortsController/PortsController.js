@@ -65,7 +65,7 @@ const PortsController = function () {
             return;
         }
 
-        const newPort = new SerialPort(portName, { echo: true, autoOpen: false });
+        const newPort = new SerialPort(portName, { echo: devMode, autoOpen: false });
 
         if (port.isOpen) {
             return port.close(createBridge(event, newPort));

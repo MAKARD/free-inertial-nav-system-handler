@@ -25,6 +25,7 @@
   "author": "Makarenko Dmitry",
   "devDependencies": {
     "@types/chai": "^4.1.2",
+    "@types/electron": "^1.6.10",
     "@types/enzyme": "^3.1.8",
     "@types/mocha": "^2.2.48",
     "@types/prop-types": "^15.5.2",

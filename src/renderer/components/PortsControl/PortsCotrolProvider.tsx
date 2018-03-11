@@ -1,6 +1,5 @@
 import * as React from "react";
-import Select from "react-select";
-import { ipcRenderer } from "electron";
+import * as Electron from "electron";
 
 import { ipcRequests } from "../../data/ipcRequests";
 import {
@@ -33,23 +32,18 @@ export class PortsControlProvider extends React.Component {
 
     public componentDidMount() {
         this.handleFetchPortsList();
-        ipcRenderer.on(ipcRequests.listenPort, this.handleListenPort);
-    }
-
-    public componentWillUnmount() {
-        ipcRenderer.removeListener(ipcRequests.listenPort, this.handleListenPort);
     }
 
     public render(): React.ReactNode {
         return this.props.children;
     }
 
-    protected handleSetActivePort = (selectedPort): void => {
+    protected handleSetActivePort = (selectedPort: string): void => {
         this.setState({ selectedPort });
     }
 
     protected handleFetchPortsList = (): void => {
-        const ports = ipcRenderer.sendSync(ipcRequests.availablePorts);
+        const ports = Electron.ipcRenderer.sendSync(ipcRequests.availablePorts);
         if (!ports[0] || !ports[0].comName) {
             return this.setState({ports: [], selectedPort: ""});
         }
@@ -61,20 +55,16 @@ export class PortsControlProvider extends React.Component {
     }
 
     protected handleStartListenPort = (): void => {
-        ipcRenderer.send(ipcRequests.openPort, this.state.selectedPort);
+        Electron.ipcRenderer.send(ipcRequests.openPort, this.state.selectedPort);
         this.setState({
             isListening: true
         });
     }
 
     protected handleStopListenPort = (): void => {
-        ipcRenderer.send(ipcRequests.closePort);
+        Electron.ipcRenderer.send(ipcRequests.closePort);
         this.setState({
             isListening: false
         });
-    }
-
-    protected handleListenPort = (event, message): void => {
-        console.log(message);
     }
 }
