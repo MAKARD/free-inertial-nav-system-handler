@@ -81,7 +81,12 @@ const PortsController = function () {
         ipcMain.on("open-port", openPort);
     };
 
-    this.unbindEvents = ipcMain.removeAllListeners;
+    this.unbindEvents = () => {
+        ipcMain.removeListener("available-ports", availablePorts);
+        ipcMain.removeListener("dev-mode", toggleDevMode);
+        ipcMain.removeListener("close-port", closePort);
+        ipcMain.removeListener("open-port", openPort);
+    }
 };
 
 module.exports = PortsController;
