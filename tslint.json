@@ -4,6 +4,7 @@
     "tslint-react"
   ],
   "rules": {
+    "array-type": [true, "generic"],
     "no-empty-interface": true,
     "jsx-alignment": true,
     "jsx-equals-spacing": [
