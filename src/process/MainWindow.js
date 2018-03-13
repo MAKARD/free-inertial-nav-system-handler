@@ -7,6 +7,7 @@ const MainWindow = function ({ width, height, openDevTools }) {
     const PortsController = new (require("./controllers/PortsController"))();
 
     const handleDidFinishLoad = () => {
+        PortsController.unbindEvents();
         PortsController.bindEvents();
         mainWindow.webContents.send("ready");
     }

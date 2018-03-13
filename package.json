@@ -79,6 +79,7 @@
     "prop-types": "^15.5.10",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-expand": "^1.5.2",
     "react-select": "^1.2.1",
     "resets.css": "^1.0.3",
     "sass-loader": "^6.0.6",

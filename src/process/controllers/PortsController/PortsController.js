@@ -12,6 +12,9 @@ SerialPort.MockBinding = require("serialport/test").Binding;
 // Restore origin binding
 SerialPort.Binding = SerialPort.originBinding;
 
+// must be the same as on arduino
+const delay = 250;
+
 const PortsController = function () {
     port = {
         isOpen: false
@@ -27,7 +30,7 @@ const PortsController = function () {
             SerialPort.Binding = SerialPort.MockBinding;
             SerialPort.Binding.createPort("/dev/COM1", { echo: true, record: true });
         } else {
-            SerialPort.Binding.reset();
+            SerialPort.Binding && SerialPort.Binding.reset();
             SerialPort.Binding = SerialPort.originBinding;
         }
     }
@@ -40,8 +43,7 @@ const PortsController = function () {
 
     closePort = () => {
         port.isOpen && port.close(() => {
-            devMode && DataEventMock.stopEvent();
-
+            DataEventMock.stopEvent();
             port.removeListener("data", sendData);
         });
     };
@@ -50,7 +52,7 @@ const PortsController = function () {
         port = newPort;
 
         port.open(() => {
-            devMode && DataEventMock.startEvent(port, 2000);
+            devMode && DataEventMock.startEvent(port, delay);
 
             port.on("data", sendData(event));
         });
@@ -86,6 +88,8 @@ const PortsController = function () {
         ipcMain.removeListener("dev-mode", toggleDevMode);
         ipcMain.removeListener("close-port", closePort);
         ipcMain.removeListener("open-port", openPort);
+        closePort();
+        SerialPort.Binding.reset && SerialPort.Binding.reset();
     }
 };
 

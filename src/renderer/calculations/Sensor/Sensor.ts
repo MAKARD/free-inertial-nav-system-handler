@@ -36,8 +36,8 @@ export class Sensor extends TypedClass {
   public writeData = (data: SensorDataProps): void | never => {
     this.checkTypes(data, SensorDataPropTypes);
 
-    this.gyroscope.push(new SensorAxis(data.gyro));
-    this.accelerometer.push(new SensorAxis(data.acc));
+    this.gyroscope.unshift(new SensorAxis(data.gyro));
+    this.accelerometer.unshift(new SensorAxis(data.acc));
   }
 
   public getPartOfData = (offset: number, limit: number): {

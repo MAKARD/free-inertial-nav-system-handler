@@ -20,17 +20,18 @@ const DataEventMock = function () {
             throw Error("Port is invalid");
         }
 
-        if (iterator === formattedData.length) {
-            iterator = 0;
-        }
-
         timer = setInterval(() => {
+            if (iterator === formattedData.length) {
+                iterator = 0;
+            }
+
             port.write(JSON.stringify(formattedData[iterator]));
             iterator++;
         }, delay);
     }
 
     this.stopEvent = () => {
+        iterator = 0;
         clearInterval(timer);
     }
 }
