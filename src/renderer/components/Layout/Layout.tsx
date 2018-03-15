@@ -1,8 +1,9 @@
 import * as React from "react";
 import * as Electron from "electron";
+import { ExpandController } from "react-expand";
 
 import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
-import { DataViewProvider } from "../DataView";
+import { DataViewProvider, DataViewPlain } from "../DataView";
 import { Header } from "./Partials";
 
 export interface LayoutState {
@@ -31,7 +32,12 @@ export class Layout extends React.Component<LayoutProps> {
 
         return (
             <div>
-                <Header />
+                <ExpandController>
+                    <Header />
+                    <DataViewProvider>
+                        <DataViewPlain />
+                    </DataViewProvider>
+                </ExpandController>
             </div>
         );
     }

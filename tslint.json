@@ -11,6 +11,7 @@
       true,
       "never"
     ],
+    "jsx-boolean-value": false,
     "jsx-key": true,
     "jsx-no-bind": true,
     "jsx-no-lambda": true,
