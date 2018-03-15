@@ -27,9 +27,14 @@ const config = {
         "babel-regenerator-runtime",
         "./src/renderer/index.tsx"
     ],
+    node: {
+        fs: "empty"
+    },
+    target: 'electron',
+
     devServer: {
         historyApiFallback: true,
-        contentBase: "./renderer",
+        contentBase: "./build",
         host: "localhost",
         publicPath: "/",
         noInfo: false,
@@ -40,6 +45,7 @@ const config = {
             colors: true
         }
     },
+
     output: {
         filename: "[name].[hash:6].js",
         path: path.resolve("./build/renderer"),
@@ -52,7 +58,7 @@ const config = {
         extensions: [".ts", ".tsx", ".js", ".json", ".jsx", ".css",],
         modules: [
             path.resolve("node_modules"),
-            path.resolve("src"),
+            path.resolve("src/renderer"),
         ],
         alias: {
             normalize: path.join(__dirname, "/node_modules/normalize.css"),

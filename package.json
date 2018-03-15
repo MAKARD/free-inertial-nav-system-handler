@@ -25,6 +25,7 @@
   "author": "Makarenko Dmitry",
   "devDependencies": {
     "@types/chai": "^4.1.2",
+    "@types/electron": "^1.6.10",
     "@types/enzyme": "^3.1.8",
     "@types/mocha": "^2.2.48",
     "@types/prop-types": "^15.5.2",
@@ -78,6 +79,7 @@
     "prop-types": "^15.5.10",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-select": "^1.2.1",
     "resets.css": "^1.0.3",
     "sass-loader": "^6.0.6",
     "serialport": "^6.1.1",
