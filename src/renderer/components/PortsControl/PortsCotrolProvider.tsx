@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as Electron from "electron";
+import * as PropTypes from "prop-types";
 
 import { ipcRequests } from "../../data/ipcRequests";
 import {
@@ -8,8 +9,17 @@ import {
     PortsControlProviderContextTypes
 } from "./PortsControlProviderContext";
 
-export class PortsControlProvider extends React.Component {
+export interface PortsControlProviderProps {
+    onPortChangeState: (state: boolean) => void;
+}
+
+export const PortsControlProviderPropTypes: {[P in keyof PortsControlProviderProps]: PropTypes.Validator<any>} = {
+    onPortChangeState: PropTypes.func.isRequired,
+}
+
+export class PortsControlProvider extends React.Component<PortsControlProviderProps> {
     public static readonly childContextTypes = PortsControlProviderContextTypes;
+    public static readonly propTypes = PortsControlProviderPropTypes;
 
     public readonly state: PortsState = {
         ports: [],
@@ -58,6 +68,8 @@ export class PortsControlProvider extends React.Component {
         Electron.ipcRenderer.send(ipcRequests.openPort, this.state.selectedPort);
         this.setState({
             isListening: true
+        }, () => {
+            this.props.onPortChangeState(this.state.isListening);
         });
     }
 
@@ -65,6 +77,8 @@ export class PortsControlProvider extends React.Component {
         Electron.ipcRenderer.send(ipcRequests.closePort);
         this.setState({
             isListening: false
+        }, () => {
+            this.props.onPortChangeState(this.state.isListening);
         });
     }
 }

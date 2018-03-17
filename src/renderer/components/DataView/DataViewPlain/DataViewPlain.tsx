@@ -3,6 +3,7 @@ import * as PropTypes from "prop-types";
 import { Tab, Header, TabsController } from "react-expand";
 
 import { ViewTextArea } from "./VewTextArea";
+
 import { DataViewProviderContextTypes, DataViewProviderContext } from "./../DataViewProviderContext";
 
 export class DataViewPlain extends React.Component {
@@ -20,8 +21,8 @@ export class DataViewPlain extends React.Component {
     }
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
-        const list = this.activeSensorsArray.map(({id}) => (
-            <Header tabId={`sensor_${id}`} key={id}>
+        const list = this.context.activeSensorsList.map(({id}) => (
+            <Header tabId={`sensor_view_plain_${id}`} key={id}>
                 Sensor {id}
             </Header>
         ));
@@ -34,8 +35,8 @@ export class DataViewPlain extends React.Component {
     }
 
     protected Tabs: React.SFC<{}> = (): JSX.Element => {
-        const list = this.activeSensorsArray.map((sensor) => (
-            <Tab tabId={`sensor_${sensor.id}`} key={sensor.id}>
+        const list = this.context.activeSensorsList.map((sensor) => (
+            <Tab tabId={`sensor_view_plain_${sensor.id}`} key={sensor.id}>
                 <ViewTextArea gyroscope={sensor.gyroscope} accelerometer={sensor.accelerometer} />
             </Tab>
         ));
@@ -45,9 +46,5 @@ export class DataViewPlain extends React.Component {
                 {list}
             </React.Fragment>
         );
-    }
-
-    private get activeSensorsArray() {
-        return this.context.sensorsRepository.sensors.filter(({state}) => state);
     }
 }

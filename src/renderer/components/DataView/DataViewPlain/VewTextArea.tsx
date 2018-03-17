@@ -1,17 +1,17 @@
 import * as React from "react";
 
-import { SensorAxis } from "../../../calculations";
+import { SensorAxis, InternalSensor } from "../../../calculations";
 
 export interface ViewTextAreaProps {
-    accelerometer: Array<SensorAxis>;
-    gyroscope: Array<SensorAxis>;
+    accelerometer: Array<InternalSensor>;
+    gyroscope: Array<InternalSensor>;
 }
 
-const mapAxis = (array: Array<SensorAxis>) => {
+const mapAxis = (array: Array<InternalSensor>): string => {
     return (
-        `x: ${array.map(({ x }) => x)}\n` +
-        `y: ${array.map(({ y }) => y)}\n` +
-        `z: ${array.map(({ z }) => z)}\n`
+        `x: ${array.map(({ axis: { x } }) => x)}\n` +
+        `y: ${array.map(({ axis: {y }}) => y)}\n` +
+        `z: ${array.map(({ axis: {z }}) => z)}\n`
     );
 }
 

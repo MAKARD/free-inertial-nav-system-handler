@@ -20,6 +20,16 @@ const MainWindow = function ({ width, height, openDevTools }) {
         mainWindow = new BrowserWindow({ width, height });
 
         mainWindow.loadURL(config.rendererUrl);
+
+        // Install React Dev Tools
+        const { default: installExtension, REACT_DEVELOPER_TOOLS } = require("electron-devtools-installer");
+
+        installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
+            console.log(`Added Extension:  ${name}`);
+        }).catch((err) => {
+            console.log("An error occurred: ", err);
+        });
+
         mainWindow.once("closed", this.close);
 
         mainWindow.webContents.on("did-finish-load", handleDidFinishLoad);

@@ -2,19 +2,30 @@ import * as React from "react";
 import * as Electron from "electron";
 import { ExpandController } from "react-expand";
 
-import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
-import { DataViewProvider, DataViewPlain } from "../DataView";
 import { Header } from "./Partials";
+import { PortsControlProvider } from "../PortsControl";
+import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
+import { LayoutContextTypes, LayoutContext } from "./LayoutContext";
+import { DataViewProvider, DataViewPlain, DataViewChart } from "../DataView";
 
 export interface LayoutState {
     isReady: boolean;
+    isPortListened: boolean;
 }
 
-export class Layout extends React.Component<LayoutProps> {
-    public static propTypes = LayoutPropTypes;
+export class Layout extends React.Component<LayoutProps, LayoutState> {
+    public static readonly childContextTypes = LayoutContextTypes;
+    public static readonly propTypes = LayoutPropTypes;
 
     public readonly state: LayoutState = {
-        isReady: false
+        isReady: false,
+        isPortListened: false
+    }
+
+    public getChildContext(): LayoutContext {
+        return {
+            isPortListened: this.state.isPortListened
+        }
     }
 
     public async componentWillMount() {
@@ -31,14 +42,21 @@ export class Layout extends React.Component<LayoutProps> {
         }
 
         return (
-            <div>
-                <ExpandController>
+            <ExpandController>
+                <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
-                    <DataViewProvider>
-                        <DataViewPlain />
-                    </DataViewProvider>
-                </ExpandController>
-            </div>
+                </PortsControlProvider>
+                <DataViewProvider>
+                    <DataViewChart />
+                    <DataViewPlain />
+                </DataViewProvider>
+            </ExpandController>
         );
+    }
+
+    protected handlePortStateChanged = (state: boolean): void => {
+        this.setState({
+            isPortListened: state
+        });
     }
 }
