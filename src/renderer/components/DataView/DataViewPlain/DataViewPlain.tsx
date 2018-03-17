@@ -20,9 +20,9 @@ export class DataViewPlain extends React.Component {
     }
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
-        const list = this.activeSensorsArray.map((key) => (
-            <Header tabId={`sensor_${key}`} key={key}>
-                Sensor {key}
+        const list = this.activeSensorsArray.map(({id}) => (
+            <Header tabId={`sensor_${id}`} key={id}>
+                Sensor {id}
             </Header>
         ));
 
@@ -34,9 +34,9 @@ export class DataViewPlain extends React.Component {
     }
 
     protected Tabs: React.SFC<{}> = (): JSX.Element => {
-        const list = this.activeSensorsArray.map((key) => (
-            <Tab tabId={`sensor_${key}`} key={key}>
-                <ViewTextArea data={this.context.getSensorById(Number(key))} />
+        const list = this.activeSensorsArray.map((sensor) => (
+            <Tab tabId={`sensor_${sensor.id}`} key={sensor.id}>
+                <ViewTextArea gyroscope={sensor.gyroscope} accelerometer={sensor.accelerometer} />
             </Tab>
         ));
 
@@ -48,7 +48,6 @@ export class DataViewPlain extends React.Component {
     }
 
     private get activeSensorsArray() {
-        return Object.keys(this.context.activeSensors)
-            .filter((key) => this.context.activeSensors[key]);
+        return this.context.sensorsRepository.sensors.filter(({state}) => state);
     }
 }
