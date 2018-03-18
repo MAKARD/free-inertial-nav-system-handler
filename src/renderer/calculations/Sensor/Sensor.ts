@@ -29,9 +29,8 @@ export interface InternalSensor {
 
 export class Sensor extends TypedClass {
   public id: number;
-
   public state: boolean = true;
-
+  public dataLength: number = 0;
   public gyroscope: Array<InternalSensor> = [];
   public accelerometer: Array<InternalSensor> = [];
 
@@ -52,6 +51,7 @@ export class Sensor extends TypedClass {
     if (this.state) {
       this.gyroscope.push({ time: this.timeTick, axis: new SensorAxis(data.gyro) });
       this.accelerometer.push({ time: this.timeTick, axis: new SensorAxis(data.acc) });
+      this.dataLength++;
     }
 
     this.attemptsList[this.currentAttempt] = true;
@@ -64,7 +64,7 @@ export class Sensor extends TypedClass {
     this.interateAtempt();
   }
 
-  public getPartOfData = (offset: number, limit: number): {
+  public getPartOfData = (offset: number, limit?: number): {
     accelerometer: Array<InternalSensor>,
     gyroscope: Array<InternalSensor>
   } => ({

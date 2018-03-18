@@ -62,10 +62,10 @@ export class DataViewChart extends React.Component {
                             accelerometer
                         </Header>
                         <Tab tabId="gyroscope">
-                            <ViewChart data={sensor.gyroscope} />
+                            <ViewChart sensor={sensor} internalSensorName="gyroscope" />
                         </Tab>
                         <Tab tabId="accelerometer">
-                            <ViewChart data={sensor.accelerometer} />
+                            <ViewChart sensor={sensor} internalSensorName="accelerometer" />
                         </Tab>
                     </TabsController>
                 </div>
