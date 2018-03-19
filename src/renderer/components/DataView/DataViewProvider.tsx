@@ -11,11 +11,11 @@ export class DataViewProvider extends React.Component {
 
     protected repository = new SensorRepository();
 
-    public getChildContext(): any {
+    public getChildContext(): DataViewProviderContext {
         return {
             sensorsRepository: this.repository,
             activeSensorsList: this.repository.sensors.filter(({state}) => state)
-        }
+        };
     }
 
     public componentDidMount() {
@@ -42,5 +42,4 @@ export class DataViewProvider extends React.Component {
         this.repository.writeSensorsData(parsedMessage);
         this.forceUpdate();
     }
-
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import { LineChart, XAxis, YAxis, CartesianGrid, Line, ResponsiveContainer } from "recharts";
+import { TimeSeries, TimeEvent } from "pondjs";
+import { ChartContainer, ChartRow, YAxis, Charts, LineChart } from "react-timeseries-charts";
 
 import { InternalSensor, Sensor } from "../../../calculations";
 import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
@@ -18,67 +19,53 @@ export const ViewChartPropTypes: {[P in keyof ViewChartProps]: PropTypes.Validat
 export class ViewChart extends React.Component<ViewChartProps> {
     public static readonly contextTypes = LayoutContextTypes;
     public static readonly propTypes = ViewChartPropTypes;
-    public static readonly range = 80;
-
     public readonly context: LayoutContext;
 
     public render(): React.ReactNode {
+        const series = new TimeSeries({
+            name: this.props.internalSensorName + this.props.sensor.id,
+            events: this.mappedDataAsEvents
+        });
+
+        if (!series.range()) {
+            return null;
+        }
+
         return (
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                    data={this.chartData}
-                    key={this.props.sensor[this.props.internalSensorName].length}
-                >
-                    <XAxis
-                        tickCount={ViewChart.range}
-                        domain={this.domainData}
-                        ticks={this.ticks}
-                        scale="linear"
-                        dataKey="time"
-                        type="number"
+            <ChartContainer
+                timeRange={series.range()}
+                format={this.handleFormatTimeAxis}
+                width="1000"
+                transition={500}
+            >
+                <ChartRow height="400">
+                    <YAxis
+                        min={Math.min(series.min("x"), series.min("y"), series.min("z"))}
+                        max={Math.max(series.max("x"), series.max("y"), series.max("z"))}
+                        type="linear"
+                        transition={500}
+                        id="y"
                     />
-                    <YAxis type="number" />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Line isAnimationActive={false} type="natural" dataKey="axis.x" stroke="#8884d8" dot={false} />
-                    <Line isAnimationActive={false} type="natural" dataKey="axis.y" stroke="#82ca9d" dot={false} />
-                    <Line isAnimationActive={false} type="natural" dataKey="axis.z" stroke="#d14" dot={false} />
-                </LineChart>
-            </ResponsiveContainer>
+                    <Charts>
+                        <LineChart
+                            interpolation="curveBasis"
+                            columns={["x", "y", "z"]}
+                            series={series}
+                            axis="y"
+                        />
+                    </Charts>
+                </ChartRow>
+            </ChartContainer>
         );
     }
 
-    protected get chartData(): Array<InternalSensor> {
-        const left = this.props.sensor.dataLength - ViewChart.range;
-        const offset = left <= 0 ? 0 : left;
-
-        return this.props.sensor.getPartOfData(
-            offset, ViewChart.range + offset
-        )[this.props.internalSensorName];
+    protected get mappedDataAsEvents(): Array<TimeEvent> {
+        return this.props.sensor[this.props.internalSensorName]
+            .map(({ time, axis }, i) => new TimeEvent(time, { ...axis }));
     }
 
-    protected get domainData(): Array<string | number> {
-        const left = this.props.sensor.dataLength - ViewChart.range;
-        const offset = left <= 0 ? 0 : left;
-
-        const limit = ViewChart.range > this.props.sensor.dataLength
-            ? this.props.sensor.dataLength
-            : ViewChart.range + offset
-
-        return [
-            this.internalSensor[offset]
-                ? this.internalSensor[offset].time
-                : 0,
-            this.internalSensor[limit]
-                ? this.internalSensor[limit].time
-                : "data-max"
-        ];
-    }
-
-    protected get ticks(): Array<number> {
-        return this.chartData.map(({ time }) => time);
-    }
-
-    protected get internalSensor(): Array<InternalSensor> {
-        return this.props.sensor[this.props.internalSensorName];
+    protected handleFormatTimeAxis = (date: Date): string => {
+        return `${date.getTime() / 1000}c`
     }
 }
+
