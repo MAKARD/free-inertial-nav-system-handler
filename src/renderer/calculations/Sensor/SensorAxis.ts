@@ -2,16 +2,22 @@ import * as PropTypes from "prop-types";
 
 import { TypedClass } from "../TypedClass";
 
+export enum Axis {
+    x = "x",
+    y = "y",
+    z = "z"
+}
+
 export interface SensorAxisProps {
-    x: number;
-    y: number;
-    z: number;
+    [Axis.x]: number;
+    [Axis.y]: number;
+    [Axis.z]: number;
 }
 
 export const SensorAxisPropTypes: {[P in keyof SensorAxisProps]: PropTypes.Validator<any>} = {
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    z: PropTypes.number.isRequired
+    [Axis.x]: PropTypes.number.isRequired,
+    [Axis.y]: PropTypes.number.isRequired,
+    [Axis.z]: PropTypes.number.isRequired
 }
 
 export class SensorAxis extends TypedClass {

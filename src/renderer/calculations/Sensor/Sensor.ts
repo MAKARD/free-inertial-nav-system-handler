@@ -22,16 +22,21 @@ export const SensorDataPropTypes: {[P in keyof SensorDataProps]: PropTypes.Valid
   gyro: PropTypes.shape(SensorAxisPropTypes).isRequired
 };
 
+export interface InternalSensor {
+  time: number;
+  axis: SensorAxis;
+}
+
 export class Sensor extends TypedClass {
   public id: number;
-
   public state: boolean = true;
-
-  public gyroscope: Array<SensorAxis> = [];
-  public accelerometer: Array<SensorAxis> = [];
+  public dataLength: number = 0;
+  public gyroscope: Array<InternalSensor> = [];
+  public accelerometer: Array<InternalSensor> = [];
 
   private attemptsList: Array<boolean> = [];
   private currentAttempt = 0;
+  private timeTick = 0;
 
   constructor(props: SensorProps) {
     super(props, SensorPropTypes);
@@ -44,8 +49,9 @@ export class Sensor extends TypedClass {
     this.checkTypes(data, SensorDataPropTypes);
 
     if (this.state) {
-      this.gyroscope.unshift(new SensorAxis(data.gyro));
-      this.accelerometer.unshift(new SensorAxis(data.acc));
+      this.gyroscope.push({ time: this.timeTick, axis: new SensorAxis(data.gyro) });
+      this.accelerometer.push({ time: this.timeTick, axis: new SensorAxis(data.acc) });
+      this.dataLength++;
     }
 
     this.attemptsList[this.currentAttempt] = true;
@@ -58,9 +64,9 @@ export class Sensor extends TypedClass {
     this.interateAtempt();
   }
 
-  public getPartOfData = (offset: number, limit: number): {
-    accelerometer: Array<SensorAxisProps>,
-    gyroscope: Array<SensorAxisProps>
+  public getPartOfData = (offset: number, limit?: number): {
+    accelerometer: Array<InternalSensor>,
+    gyroscope: Array<InternalSensor>
   } => ({
     accelerometer: this.accelerometer.slice(offset, limit),
     gyroscope: this.gyroscope.slice(offset, limit)
@@ -74,6 +80,7 @@ export class Sensor extends TypedClass {
     }
 
     this.state = !this.attemptsList.every((attempt) => !attempt);
+    this.timeTick += SensorRepository.readInterval;
   }
 
 }

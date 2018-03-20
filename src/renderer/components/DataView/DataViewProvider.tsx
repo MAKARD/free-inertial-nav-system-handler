@@ -3,7 +3,7 @@ import * as Electron from "electron";
 
 import { ipcRequests } from "../../data/ipcRequests";
 
-import { Sensor, SensorDataProps, SensorProps, SensorRepository } from "../../calculations";
+import { Sensor, SensorDataProps, SensorProps, SensorRepository, InternalSensor } from "../../calculations";
 import { DataViewProviderContextTypes, DataViewProviderContext } from "./DataViewProviderContext";
 
 export class DataViewProvider extends React.Component {
@@ -13,8 +13,9 @@ export class DataViewProvider extends React.Component {
 
     public getChildContext(): DataViewProviderContext {
         return {
-            sensorsRepository: this.repository
-        }
+            sensorsRepository: this.repository,
+            activeSensorsList: this.repository.sensors.filter(({state}) => state)
+        };
     }
 
     public componentDidMount() {
@@ -41,5 +42,4 @@ export class DataViewProvider extends React.Component {
         this.repository.writeSensorsData(parsedMessage);
         this.forceUpdate();
     }
-
 }

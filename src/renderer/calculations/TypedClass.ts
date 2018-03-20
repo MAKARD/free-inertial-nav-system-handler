@@ -13,7 +13,7 @@ export class TypedClass {
         this.checkTypes(props, propTypes);
     }
 
-    protected checkTypes = (props: Props, propTypes: Types): void | never => {
+    protected checkTypes(props: Props, propTypes: Types): void | never {
         (PropTypes as any).checkPropTypes(propTypes, props, "", "TypedClassChild", () => {
             throw new Error("Invalid passed props");
         });
