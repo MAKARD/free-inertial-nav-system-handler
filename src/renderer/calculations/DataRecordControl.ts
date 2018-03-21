@@ -1,14 +1,15 @@
-import { Sensor, SensorProps, SensorDataProps } from "../Sensor";
+import { Sensor, SensorProps, SensorDataProps } from "./Sensor";
 
 export interface LostPackage {
     time: string;
     message: string;
 }
 
-export class SensorRepository {
+export class DataRecordControl {
     public static readonly readInterval = 250; // ms
     public static readonly maxSensorsCount = 3;
     public static readonly readAttemptsCount = 4; // 1s: 250ms * 4
+    public static readonly activeRecordLimit = 20;
 
     public sensors: Array<Sensor> = this.emptySensorsArray;
     public lostPackages: Array<LostPackage> = [];
@@ -50,7 +51,7 @@ export class SensorRepository {
     }
 
     private get emptySensorsArray(): Array<Sensor> {
-        return (new Array(SensorRepository.maxSensorsCount))
+        return (new Array(DataRecordControl.maxSensorsCount))
             .fill({})
             .map((x, i) => new Sensor({ id: i + 1 }));
     }

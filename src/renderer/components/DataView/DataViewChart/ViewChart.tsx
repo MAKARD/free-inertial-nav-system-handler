@@ -89,7 +89,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                     categories={this.legendCategories}
                     style={this.legendStyle}
                 />
-                <Resizable>
+                <Resizable className="chart">
                     <ChartContainer
                         onTimeRangeChanged={this.handleTimeRangeChange}
                         enablePanZoom={!this.context.isPortListened}
@@ -142,6 +142,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
 
     protected get mappedDataAsEvents(): Array<TimeEvent> {
         return this.props.sensor[this.props.internalSensorName]
+            .get()
             .map(({ time, axis }, i) => new TimeEvent(time, { ...axis }));
     }
 
@@ -168,7 +169,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
             return this.state.tracker && this.setState({ tracker: undefined });
         }
 
-        this.setState({ tracker: this.series.atTime(time) })
+        this.setState({ tracker: this.series.atTime(time) });
     }
 
     protected get EventMarkers(): Array<JSX.Element> {
