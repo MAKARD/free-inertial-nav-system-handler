@@ -1,10 +1,10 @@
 import { InternalSensor } from "./Sensor";
 
 export class DataRepository {
-    private readonly activeRecordLimit: number;
     public readonly storageId: string;
 
-    private activeRecords: Array<InternalSensor> = [];
+    private readonly activeRecordLimit: number;
+    private activeRecords: Set<InternalSensor> = new Set();
 
     constructor(activeRecordLimit: number, id: string) {
         this.activeRecordLimit = activeRecordLimit;
@@ -25,16 +25,16 @@ export class DataRepository {
     }
 
     public put = (data: InternalSensor): void => {
-        if (this.activeRecords.length === this.activeRecordLimit) {
-            this.activeRecords.splice(0, 1);
+        if (this.activeRecords.size === this.activeRecordLimit) {
+            this.activeRecords.delete(Array.from(this.activeRecords)[0]);
         }
 
-        this.activeRecords.push(data);
+        this.activeRecords.add(data);
         this.push(data);
     }
 
     public get = (): Array<InternalSensor> => {
-        return this.activeRecords;
+        return Array.from(this.activeRecords);
     }
 
     private getTimeIndex(searchTime: number): number | never {
@@ -50,12 +50,12 @@ export class DataRepository {
     private push = (data: InternalSensor): void => {
         localStorage.setItem(
             this.storageId,
-            this.storedData.replace("]", `${this.pull().length ? "," : ""}${JSON.stringify(data)}]`)
+            this.storedData.replace("]", `${JSON.stringify(data)},]`)
         );
     }
 
     private pull = (): Array<InternalSensor> => {
-        return JSON.parse(this.storedData);
+        return JSON.parse(this.storedData.replace(",]", "]"));
     }
 
     private get storedData(): string {
