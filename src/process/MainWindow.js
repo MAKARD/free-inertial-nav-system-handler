@@ -5,10 +5,14 @@ const config = require(`../../config/config.${process.env.NODE_ENV}`);
 const MainWindow = function ({ width, height, openDevTools }) {
     let mainWindow;
     const PortsController = new (require("./controllers/PortsController"))();
+    const MemoryController = new (require("./controllers/MemoryController"))();
 
     const handleDidFinishLoad = () => {
         PortsController.unbindEvents();
+        MemoryController.unbindEvents();
+        
         PortsController.bindEvents();
+        MemoryController.bindEvents();
         mainWindow.webContents.send("ready");
     }
 
@@ -38,6 +42,7 @@ const MainWindow = function ({ width, height, openDevTools }) {
 
     this.close = () => {
         PortsController.unbindEvents();
+        MemoryController.unbindEvents();
         mainWindow = undefined;
     }
 }

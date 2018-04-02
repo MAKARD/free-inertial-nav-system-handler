@@ -186,6 +186,6 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                 key={axis}
                 axis="y"
             />
-        ))
+        ));
     }
 }
