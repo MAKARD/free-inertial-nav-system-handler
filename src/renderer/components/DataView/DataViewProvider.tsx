@@ -3,18 +3,17 @@ import * as Electron from "electron";
 
 import { ipcRequests } from "../../data/ipcRequests";
 
-import { Sensor, SensorDataProps, SensorProps, SensorRepository, InternalSensor } from "../../calculations";
+import { Sensor, SensorDataProps, SensorProps, DataRecordControl, InternalSensor } from "../../calculations";
 import { DataViewProviderContextTypes, DataViewProviderContext } from "./DataViewProviderContext";
 
 export class DataViewProvider extends React.Component {
     public static readonly childContextTypes = DataViewProviderContextTypes;
 
-    protected repository = new SensorRepository();
+    protected dataRecordControl = new DataRecordControl();
 
     public getChildContext(): DataViewProviderContext {
         return {
-            sensorsRepository: this.repository,
-            activeSensorsList: this.repository.sensors.filter(({state}) => state)
+            activeSensorsList: this.dataRecordControl.sensors.filter(({state}) => state)
         };
     }
 
@@ -35,11 +34,11 @@ export class DataViewProvider extends React.Component {
         try {
             parsedMessage = JSON.parse(message);
         } catch (error) {
-            this.repository.writeLostPackage(message);
+            this.dataRecordControl.writeLostPackage(message);
             return this.forceUpdate();
         }
 
-        this.repository.writeSensorsData(parsedMessage);
+        this.dataRecordControl.writeSensorsData(parsedMessage);
         this.forceUpdate();
     }
 }

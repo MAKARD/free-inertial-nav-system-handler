@@ -1,7 +1,8 @@
 import * as PropTypes from "prop-types";
 
 import { SensorAxis, SensorAxisProps, SensorAxisPropTypes } from "./SensorAxis";
-import { SensorRepository } from "../SensorRepository";
+import { DataRecordControl } from "../DataRecordControl";
+import { DataRepository } from "../DataRepository";
 import { TypedClass } from "../TypedClass";
 
 export interface SensorProps {
@@ -31,8 +32,8 @@ export class Sensor extends TypedClass {
   public id: number;
   public state: boolean = true;
   public dataLength: number = 0;
-  public gyroscope: Array<InternalSensor> = [];
-  public accelerometer: Array<InternalSensor> = [];
+  public gyroscope: DataRepository;
+  public accelerometer: DataRepository;
 
   private attemptsList: Array<boolean> = [];
   private currentAttempt = 0;
@@ -42,15 +43,18 @@ export class Sensor extends TypedClass {
     super(props, SensorPropTypes);
 
     this.id = props.id;
-    this.attemptsList = (new Array(SensorRepository.readAttemptsCount).fill(true));
+    this.attemptsList = (new Array(DataRecordControl.readAttemptsCount).fill(true));
+
+    this.accelerometer = new DataRepository(DataRecordControl.activeRecordLimit, `acc_${this.id}`);
+    this.gyroscope = new DataRepository(DataRecordControl.activeRecordLimit, `gyro_${this.id}`);
   }
 
   public writeData = (data: SensorDataProps): void | never => {
     this.checkTypes(data, SensorDataPropTypes);
 
     if (this.state) {
-      this.gyroscope.push({ time: this.timeTick, axis: new SensorAxis(data.gyro) });
-      this.accelerometer.push({ time: this.timeTick, axis: new SensorAxis(data.acc) });
+      this.gyroscope.put({ time: this.timeTick, axis: new SensorAxis(data.gyro) });
+      this.accelerometer.put({ time: this.timeTick, axis: new SensorAxis(data.acc) });
       this.dataLength++;
     }
 
@@ -64,14 +68,6 @@ export class Sensor extends TypedClass {
     this.interateAtempt();
   }
 
-  public getPartOfData = (offset: number, limit?: number): {
-    accelerometer: Array<InternalSensor>,
-    gyroscope: Array<InternalSensor>
-  } => ({
-    accelerometer: this.accelerometer.slice(offset, limit),
-    gyroscope: this.gyroscope.slice(offset, limit)
-  });
-
   private interateAtempt = () => {
     if (this.currentAttempt === this.attemptsList.length) {
       this.currentAttempt = 0;
@@ -80,7 +76,7 @@ export class Sensor extends TypedClass {
     }
 
     this.state = !this.attemptsList.every((attempt) => !attempt);
-    this.timeTick += SensorRepository.readInterval;
+    this.timeTick += DataRecordControl.readInterval;
   }
 
 }

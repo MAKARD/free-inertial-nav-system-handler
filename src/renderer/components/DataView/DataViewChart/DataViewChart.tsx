@@ -33,7 +33,7 @@ export class DataViewChart extends React.Component {
     }
 
     protected handleSave = (): void => {
-        saveSvgAsPng(document.querySelector(".recharts-surface"), "diagram.png")
+        saveSvgAsPng(document.querySelector(".chart > svg"), "diagram.png")
     }
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {

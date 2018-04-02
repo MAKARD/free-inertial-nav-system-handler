@@ -1,2 +1,3 @@
 export * from "./Sensor";
-export * from "./SensorRepository";
+export * from "./DataRepository";
+export * from "./DataRecordControl";
