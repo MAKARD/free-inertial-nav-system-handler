@@ -3,17 +3,17 @@ import * as PropTypes from "prop-types";
 import { saveSvgAsPng } from "save-svg-as-png";
 import { Tab, Header, TabsController } from "react-expand";
 
-import { DataViewProviderContextTypes, DataViewProviderContext } from "./../DataViewProviderContext";
 import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
+import { DataRecordContext, DataRecordContextTypes } from "../../DataRecord";
 import { ViewChart } from "./ViewChart";
 
 export class DataViewChart extends React.Component {
     public static readonly contextTypes = {
-        ...DataViewProviderContextTypes,
+        ...DataRecordContextTypes,
         ...LayoutContextTypes
     };
 
-    public readonly context: DataViewProviderContext & LayoutContext;
+    public readonly context: DataRecordContext & LayoutContext;
 
     public render(): React.ReactNode {
         return (

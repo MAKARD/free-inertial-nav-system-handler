@@ -4,12 +4,12 @@ import { Tab, Header, TabsController } from "react-expand";
 
 import { ViewTextArea } from "./VewTextArea";
 
-import { DataViewProviderContextTypes, DataViewProviderContext } from "./../DataViewProviderContext";
+import { DataRecordContext, DataRecordContextTypes } from "../../DataRecord";
 
 export class DataViewPlain extends React.Component {
-    public static readonly contextTypes = DataViewProviderContextTypes;
+    public static readonly contextTypes = DataRecordContextTypes;
 
-    public readonly context: DataViewProviderContext;
+    public readonly context: DataRecordContext;
 
     public render(): React.ReactNode {
         return (

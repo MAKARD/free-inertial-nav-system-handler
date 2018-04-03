@@ -11,14 +11,14 @@ export interface PerfomanceStatState {
 }
 
 export class PerfomanceStat extends React.Component<{}, PerfomanceStatState> {
-    private intervalId: any;
-
     public readonly state: PerfomanceStatState = {
         rss: 0,
         heapUsed: 0,
         external: 0,
         heapTotal: 0
     };
+
+    private intervalId: any;
 
     public componentDidMount() {
         this.intervalId = setInterval(() => {

@@ -3,11 +3,15 @@ import * as Electron from "electron";
 import { ExpandController } from "react-expand";
 
 import { Header } from "./Partials";
+
+import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
+import { MathlabUnloader } from "../MathLabUnloader";
 import { PortsControlProvider } from "../PortsControl";
+import { DataViewPlain, DataViewChart } from "../DataView";
+
 import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
 import { LayoutContextTypes, LayoutContext } from "./LayoutContext";
-import { DataViewProvider, DataViewPlain, DataViewChart } from "../DataView";
 
 export interface LayoutState {
     isReady: boolean;
@@ -48,10 +52,11 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                 <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
                 </PortsControlProvider>
-                <DataViewProvider>
+                <DataRecord>
                     <DataViewChart />
                     <DataViewPlain />
-                </DataViewProvider>
+                    <MathlabUnloader />
+                </DataRecord>
             </ExpandController>
         );
     }
