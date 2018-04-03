@@ -3,6 +3,7 @@ import * as Electron from "electron";
 import { ExpandController } from "react-expand";
 
 import { Header } from "./Partials";
+import { PerfomanceStat } from "../PerfomanceStat";
 import { PortsControlProvider } from "../PortsControl";
 import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
 import { LayoutContextTypes, LayoutContext } from "./LayoutContext";
@@ -43,6 +44,7 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
 
         return (
             <ExpandController>
+                <PerfomanceStat />
                 <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
                 </PortsControlProvider>
