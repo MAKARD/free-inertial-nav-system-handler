@@ -19,6 +19,7 @@ export class AvailablePortsList extends React.Component<React.HTMLProps<HTMLDivE
                 value={this.context.selectedPort}
                 onChange={this.handlePortChange}
                 options={this.mappedPorts}
+                noResultsText="No ports"
                 searchable={false}
                 clearable={false}
             />

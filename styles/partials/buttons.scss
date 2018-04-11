@@ -1,0 +1,21 @@
+.btn {
+    display: inline-block;
+    
+    padding: 1em;
+
+    cursor: pointer;
+
+    &_primary {
+        background-color: $color-secondary;
+        color: $font-color;
+
+        transition: all .5s ease;
+
+        &:hover,
+        &.active,
+        &.is-open {
+            background-color: $color-secondary-active;
+            color: $font-color-active;
+        }
+    }
+}

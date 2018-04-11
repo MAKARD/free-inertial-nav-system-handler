@@ -26,7 +26,7 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
     public getChildContext(): LayoutContext {
         return {
             isPortListened: this.state.isPortListened
-        }
+        };
     }
 
     public async componentWillMount() {
@@ -44,10 +44,10 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
 
         return (
             <ExpandController>
-                <PerfomanceStat />
                 <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
                 </PortsControlProvider>
+                <PerfomanceStat />
                 <DataViewProvider>
                     <DataViewChart />
                     <DataViewPlain />

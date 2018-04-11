@@ -11,20 +11,39 @@ export class Header extends React.Component {
     public render(): React.ReactNode {
         return (
             <header>
-                <span>Available ports </span>
-                <AvailablePortsList />
-                <PortsListenControl
-                    stageStartChildren={"start listen"}
-                    stageStopChildren={"stop listen"}
-                />
-                <UpdatePortsList>
-                    Refresh ports list
-                    </UpdatePortsList>
-                <span>devMode</span>
-                <DevModeSwitcher
-                    stageStartChildren={"on"}
-                    stageStopChildren={"off"}
-                />
+                <div className="control-menu">
+                    <div className="control-menu__item">
+                        <DevModeSwitcher
+                            className="btn btn_primary"
+                            stageStartChildren="devMode on"
+                            stageStopChildren="devMode off"
+                        />
+                    </div>
+                </div>
+                <div className="control-menu">
+                    <div className="control-menu__item">
+                        <AvailablePortsList
+                            className="btn btn_primary"
+                            placeholder="Select port"
+                        />
+                    </div>
+                </div>
+                <div className="control-menu">
+                    <div className="control-menu__item">
+                        <PortsListenControl
+                            className="btn btn_primary"
+                            stageStartChildren="Start"
+                            stageStopChildren="Stop"
+                        />
+                    </div>
+                </div>
+                <div className="control-menu">
+                    <div className="control-menu__item">
+                        <UpdatePortsList className="btn btn_primary">
+                            Refresh ports
+                        </UpdatePortsList>
+                    </div>
+                </div>
             </header>
         );
     }
