@@ -7,7 +7,7 @@ export interface LostPackage {
 
 export class DataRecordControl {
     public static readonly readInterval = 250; // ms
-    public static readonly maxSensorsCount = 3;
+    public static readonly maxSensorsCount = 4;
     public static readonly readAttemptsCount = 4; // 1s: 250ms * 4
     public static readonly activeRecordLimit = 40;
 
