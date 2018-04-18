@@ -1,10 +1,16 @@
-const mockRowData = require("../../data/DataMock.json");
+const DataMock = require("../../data/DataMock.js");
 
 const DataEventMock = function () {
     let timer;
     let iterator = 0;
+    const mockRowData = DataMock.split("$")
+        .reduce((accumulator, nextValue) => {
+            accumulator.push(nextValue);
+            accumulator.push("$");
+            return accumulator;
+        }, []);
     /*
-        One premise contains data from 3 sensors
+        One premise contains data from all sensors
         Example data must be according formatted
      */
     const formattedData = mockRowData
