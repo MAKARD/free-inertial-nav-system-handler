@@ -13,7 +13,7 @@ export class DataViewProvider extends React.Component {
 
     public getChildContext(): DataViewProviderContext {
         return {
-            activeSensorsList: this.dataRecordControl.sensors.filter(({state}) => state)
+            activeSensorsList: this.dataRecordControl.sensors.filter(({ state }) => state)
         };
     }
 

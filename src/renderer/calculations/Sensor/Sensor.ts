@@ -69,7 +69,7 @@ export class Sensor extends TypedClass {
   }
 
   private interateAtempt = () => {
-    if (this.currentAttempt === this.attemptsList.length) {
+    if (this.currentAttempt === DataRecordControl.readAttemptsCount) {
       this.currentAttempt = 0;
     } else {
       this.currentAttempt++;
