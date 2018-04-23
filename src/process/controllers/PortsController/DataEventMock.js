@@ -3,21 +3,9 @@ const DataMock = require("../../data/DataMock.js");
 const DataEventMock = function () {
     let timer;
     let iterator = 0;
-    const mockRowData = DataMock.split("$")
-        .reduce((accumulator, nextValue) => {
-            accumulator.push(nextValue);
-            accumulator.push("$");
-            return accumulator;
-        }, []);
-    /*
-        One premise contains data from all sensors
-        Example data must be according formatted
-     */
-    const formattedData = mockRowData
-        .map((e, i) => i % 3 ? null : mockRowData.slice(i, i + 3))
-        .filter((e) => !!e);
+    const formattedData = DataMock.split("$");
 
-    this.startEvent = (port, delay) => {
+    this.startEvent = async (port, delay) => {
         if (typeof delay !== "number") {
             throw Error("Delay must be number");
         }
@@ -26,19 +14,36 @@ const DataEventMock = function () {
             throw Error("Port is invalid");
         }
 
-        timer = setInterval(() => {
-            if (iterator === formattedData.length) {
-                iterator = 0;
-            }
+        await new Promise((resolve) => {
+            timer = setTimeout(() => {
+                if (iterator === formattedData.length) {
+                    iterator = 0;
+                }
 
-            port.write(JSON.stringify(formattedData[iterator]));
-            iterator++;
-        }, delay);
+                let i = 0;
+                while (i < formattedData[iterator].length) {
+                    port.write(formattedData[iterator][i]);
+                    i++;
+                }
+                iterator++;
+                resolve();
+            }, delay / 2);
+        });
+
+        await new Promise((resolve) => setTimeout(() => {
+            port.write("$");
+            resolve();
+        }, delay / 2));
+
+        if (timer !== undefined) {
+            this.startEvent(port, delay);
+        }
     }
 
     this.stopEvent = () => {
         iterator = 0;
         clearInterval(timer);
+        timer = undefined;
     }
 }
 

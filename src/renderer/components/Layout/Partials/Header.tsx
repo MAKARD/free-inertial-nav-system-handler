@@ -19,7 +19,7 @@ export class Header extends React.Component {
                 />
                 <UpdatePortsList>
                     Refresh ports list
-                    </UpdatePortsList>
+                </UpdatePortsList>
                 <span>devMode</span>
                 <DevModeSwitcher
                     stageStartChildren={"on"}
