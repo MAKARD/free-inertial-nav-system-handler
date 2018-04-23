@@ -16,6 +16,9 @@ import {
 import { InternalSensor, Sensor, Axis } from "../../../calculations";
 import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
 
+ChartRow.propTypes.trackerTimeFormat = PropTypes.any;
+ChartRow.propTypes.timeFormat = PropTypes.any;
+
 export interface ViewChartProps {
     sensor: Sensor;
     internalSensorName: "accelerometer" | "gyroscope";

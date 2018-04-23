@@ -6,7 +6,6 @@ import { Header } from "./Partials";
 
 import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
-import { MathlabUnloader } from "../MathLabUnloader";
 import { PortsControlProvider } from "../PortsControl";
 import { DataViewPlain, DataViewChart } from "../DataView";
 
@@ -55,7 +54,6 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                 <DataRecord>
                     <DataViewChart />
                     <DataViewPlain />
-                    <MathlabUnloader />
                 </DataRecord>
             </ExpandController>
         );

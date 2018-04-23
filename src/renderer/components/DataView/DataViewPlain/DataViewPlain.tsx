@@ -22,7 +22,7 @@ export class DataViewPlain extends React.Component {
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map(({id}) => (
-            <Header tabId={`sensor_view_plain_${id}`} key={id}>
+            <Header expandId={`sensor_view_plain_${id}`} key={id}>
                 Sensor {id}
             </Header>
         ));
@@ -36,7 +36,7 @@ export class DataViewPlain extends React.Component {
 
     protected Tabs: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map((sensor) => (
-            <Tab tabId={`sensor_view_plain_${sensor.id}`} key={sensor.id}>
+            <Tab expandId={`sensor_view_plain_${sensor.id}`} key={sensor.id}>
                 <ViewTextArea gyroscope={sensor.gyroscope} accelerometer={sensor.accelerometer} />
             </Tab>
         ));

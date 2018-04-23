@@ -38,7 +38,7 @@ export class DataViewChart extends React.Component {
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map(({ id }) => (
-            <Header tabId={`sensor_view_chart_${id}`} key={id}>
+            <Header expandId={`sensor_view_chart_${id}`} key={id}>
                 Sensor {id}
             </Header>
         ));
@@ -52,19 +52,19 @@ export class DataViewChart extends React.Component {
 
     protected Tabs: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map((sensor) => (
-            <Tab tabId={`sensor_view_chart_${sensor.id}`} key={sensor.id}>
+            <Tab expandId={`sensor_view_chart_${sensor.id}`} key={sensor.id}>
                 <div>
                     <TabsController>
-                        <Header tabId="gyroscope">
+                        <Header expandId="gyroscope">
                             gyroscope
                         </Header>
-                        <Header tabId="accelerometer">
+                        <Header expandId="accelerometer">
                             accelerometer
                         </Header>
-                        <Tab tabId="gyroscope">
+                        <Tab expandId="gyroscope">
                             <ViewChart sensor={sensor} internalSensorName="gyroscope" />
                         </Tab>
-                        <Tab tabId="accelerometer">
+                        <Tab expandId="accelerometer">
                             <ViewChart sensor={sensor} internalSensorName="accelerometer" />
                         </Tab>
                     </TabsController>

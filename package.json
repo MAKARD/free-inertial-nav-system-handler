@@ -81,7 +81,7 @@
     "prop-types": "^15.5.10",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-expand": "^1.5.2",
+    "react-expand": "^2.5.1",
     "react-select": "^1.2.1",
     "react-timeseries-charts": "^0.14.0",
     "resets.css": "^1.0.3",
