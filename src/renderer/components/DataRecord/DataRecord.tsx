@@ -4,7 +4,7 @@ import * as PropTypes from "prop-types";
 
 import { ipcRequests } from "../../data/ipcRequests";
 
-import { DataRecordControl, SensorProps, SensorDataProps, Sensor } from "../../calculations";
+import { DataRecordControl, SensorProps, SensorDataProps, Sensor } from "../../sensors";
 
 export interface DataRecordContext {
     activeSensorsList: Array<Sensor>;
