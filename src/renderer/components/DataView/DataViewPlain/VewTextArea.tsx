@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { SensorAxis, InternalSensor, DataRepository } from "../../../calculations";
+import { SensorAxis, InternalSensor, DataRepository } from "../../../sensors";
 
 export interface ViewTextAreaProps {
     accelerometer: DataRepository;

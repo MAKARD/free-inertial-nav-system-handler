@@ -13,7 +13,7 @@ import {
     YAxis
 } from "react-timeseries-charts";
 
-import { InternalSensor, Sensor, Axis } from "../../../calculations";
+import { InternalSensor, Sensor, Axis } from "../../../sensors";
 import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
 
 ChartRow.propTypes.trackerTimeFormat = PropTypes.any;
@@ -146,7 +146,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
     protected get mappedDataAsEvents(): Array<TimeEvent> {
         return this.props.sensor[this.props.internalSensorName]
             .get()
-            .map(({ time, axis }, i) => new TimeEvent(time, { ...axis }));
+            .map(({ time, axis }) => new TimeEvent(time, { ...axis }));
     }
 
     protected getTrackerInfo = (axis: string): string => (
