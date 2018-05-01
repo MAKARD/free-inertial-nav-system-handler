@@ -23,6 +23,8 @@ const PortsController = function () {
     devMode = false;
     DataEventMock = new (require("./DataEventMock"))();
 
+    message = "";
+
     toggleDevMode = (event, state) => {
         devMode = state;
 
@@ -61,7 +63,13 @@ const PortsController = function () {
     };
 
     sendData = (event) => (data) => {
-        event.sender.send("listen-port", Buffer.from(data).toString());
+        const currentData = Buffer.from(data).toString().trim();
+        if (currentData !== "$") {
+            message += currentData;
+        } else {
+            event.sender.send("listen-port", message);
+            message = "";
+        }
     }
 
     openPort = (event, portName) => {
