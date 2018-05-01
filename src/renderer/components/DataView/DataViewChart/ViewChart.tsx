@@ -40,6 +40,7 @@ export interface ViewChartState {
         get: (key: string) => number;
         timestamp: () => Date;
     };
+    all: boolean;
 }
 
 export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
@@ -53,7 +54,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
 
     public series = new TimeSeries({
         name: this.props.internalSensorName + this.props.sensor.id,
-        events: this.mappedDataAsEvents
+        events: [],
     });
 
     public readonly context: LayoutContext;
@@ -64,20 +65,35 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
             [Axis.x]: true,
             [Axis.y]: true,
             [Axis.z]: true
-        }
+        },
+        all: false
     };
 
     public componentWillReceiveProps() {
         if (!this.context.isPortListened) {
+            if (!this.state.all) {
+                this.series = new TimeSeries({
+                    name: this.props.internalSensorName + this.props.sensor.id,
+                    events: this.getMappedDataAsEvents(this.props.sensor[this.props.internalSensorName].pull())
+                });
+
+                this.setState({
+                    timeRange: this.series.range(),
+                    all: true
+                });
+            }
             return;
         }
 
         this.series = new TimeSeries({
             name: this.props.internalSensorName + this.props.sensor.id,
-            events: this.mappedDataAsEvents
+            events: this.getMappedDataAsEvents(this.props.sensor[this.props.internalSensorName].get())
         });
 
-        this.setState({ timeRange: this.series.range() });
+        this.setState({
+            timeRange: this.series.range(),
+            all: false
+        });
     }
 
     public render(): React.ReactNode {
@@ -143,10 +159,8 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         return styler(Object.keys(Axis).map((key) => ({ key, color: ViewChart.colorScheme[key], width: 2 })));
     }
 
-    protected get mappedDataAsEvents(): Array<TimeEvent> {
-        return this.props.sensor[this.props.internalSensorName]
-            .get()
-            .map(({ time, axis }) => new TimeEvent(time, { ...axis }));
+    protected getMappedDataAsEvents = (sensorData: Array<InternalSensor>): Array<TimeEvent> => {
+        return sensorData.map(({ time, axis }) => new TimeEvent(time, { ...axis }));
     }
 
     protected getTrackerInfo = (axis: string): string => (
@@ -192,3 +206,4 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         ));
     }
 }
+// tslint:disable-next-line

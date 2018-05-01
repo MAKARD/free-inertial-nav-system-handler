@@ -12,18 +12,6 @@ export class DataRepository {
         this.storageId = id;
     }
 
-    public findInRange = (minTime: number, maxTime: number, step?: number): Array<InternalSensor> | never => {
-        const minTimeIndex = this.getTimeIndex(minTime);
-        const maxTimeIndex = this.getTimeIndex(maxTime);
-
-        const rawData = this.pull();
-        const composedData = step
-            ? rawData.filter(({ time }) => !(time % step))
-            : rawData;
-
-        return composedData.slice(minTimeIndex, maxTimeIndex);
-    }
-
     public put = (data: InternalSensor): void => {
         if (this.activeRecords.size === this.activeRecordLimit) {
             this.activeRecords.delete(Array.from(this.activeRecords)[0]);
@@ -37,14 +25,12 @@ export class DataRepository {
         return Array.from(this.activeRecords);
     }
 
-    private getTimeIndex(searchTime: number): number | never {
-        const founded = this.pull().findIndex(({ time }) => time === searchTime);
+    public pull = (): Array<InternalSensor> => {
+        return JSON.parse(this.storedData.replace(",]", "]"));
+    }
 
-        if (founded === -1) {
-            throw Error(`Record in time ${searchTime} not found`);
-        }
-
-        return founded;
+    public clear = (): void => {
+        localStorage.removeItem(this.storageId);
     }
 
     private push = (data: InternalSensor): void => {
@@ -52,10 +38,6 @@ export class DataRepository {
             this.storageId,
             this.storedData.replace("]", `${JSON.stringify(data)},]`)
         );
-    }
-
-    private pull = (): Array<InternalSensor> => {
-        return JSON.parse(this.storedData.replace(",]", "]"));
     }
 
     private get storedData(): string {

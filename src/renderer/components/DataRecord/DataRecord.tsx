@@ -40,6 +40,10 @@ export class DataRecord extends React.Component {
     }
 
     public componentDidMount() {
+        this.dataRecordControl.sensors.forEach(({gyroscope, accelerometer}) => {
+            gyroscope.clear();
+            accelerometer.clear();
+        });
         Electron.ipcRenderer.on(ipcRequests.listenPort, this.handleListenPort);
     }
 
