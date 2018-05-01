@@ -26,7 +26,8 @@
 
         white-space: nowrap;
 
-        background-color: $color-secondary;
+        background-color: $bg-color-mute;
+        color: $color-main;
 
         > .Select-menu {
             
@@ -42,8 +43,8 @@
                 transition: all .5s ease;
 
                 &:hover {
-                    background-color: $color-secondary-active;
-                    color: $font-color-active;
+                    background-color: $bg-color-light;
+                    color: $color-light;
                 }
             }
         }

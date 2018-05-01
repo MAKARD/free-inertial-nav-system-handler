@@ -1,0 +1,86 @@
+.switcher {
+    padding: 0 1em;
+
+    > .switcher-handle {
+        vertical-align: top;
+
+        display: inline-block;
+
+        width: 51px;
+        height: 24px;
+
+        border: 1px solid $color-main;
+        border-radius: 12px;
+
+        cursor: pointer;
+
+        position: relative;
+
+        margin-left: .5em;
+        
+        transition: border-color .3s ease;
+
+        &:after {
+            content: "";
+
+            width: 18px;
+            height: 18px;
+
+            position: absolute;
+
+            top: 0;
+            bottom: 0;
+            left: 0;
+            
+            margin: 2px;
+
+            border-radius: 50%;
+
+            background-color: $color-main;
+
+            transition: left .3s ease, background-color .3s ease;
+        }
+    }
+
+    > .switcher-label {
+        vertical-align: top;
+
+        line-height: 24px;
+
+        user-select: none;
+
+        color: $color-main;
+
+        transition: color .3s ease;
+    }
+
+    &.active {
+        > .switcher-label {
+            color: $color-light;
+        }
+
+        > .switcher-handle {
+            border-color: $color-light;
+
+            &:after {
+                left: calc(100% - 22px);
+
+                background-color: $color-light;
+            }
+        }
+    }
+
+    &.disabled {
+        > .switcher-label {
+            color: $color-mute;
+        }
+
+        > .switcher-handle {
+            border-color: $color-mute;
+
+            &:after {
+                background-color: $color-mute;
+            }
+        }
+    }
+}

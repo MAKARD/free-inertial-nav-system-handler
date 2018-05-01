@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ipcRenderer } from "electron";
-import * as PropTypes from "prop-types";
 
 import { ipcRequests } from "../../data/ipcRequests";
 import {
@@ -12,19 +11,8 @@ export interface DevModeState {
     isActive: boolean;
 }
 
-export interface DevModeSwitcherProps extends React.HTMLProps<HTMLButtonElement> {
-    stageStartChildren?: React.ReactNode,
-    stageStopChildren?: React.ReactNode
-}
-
-export const DevModeSwitcherPropTypes: {[P in keyof DevModeSwitcherProps]: PropTypes.Validator<any>} = {
-    stageStartChildren: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-    stageStopChildren: PropTypes.oneOfType([PropTypes.element, PropTypes.string])
-};
-
-export class DevModeSwitcher extends React.Component<DevModeSwitcherProps, DevModeState> {
+export class DevModeSwitcher extends React.Component<React.HTMLProps<HTMLDivElement>, DevModeState> {
     public static readonly contextTypes = PortsControlProviderContextTypes;
-    public static readonly propTypes = DevModeSwitcherPropTypes;
 
     public readonly context: PortsControlProviderContext;
     public readonly state: DevModeState = {
@@ -32,21 +20,30 @@ export class DevModeSwitcher extends React.Component<DevModeSwitcherProps, DevMo
     };
 
     public render(): JSX.Element {
-        const { stageStartChildren, stageStopChildren, ...buttonProps } = this.props;
-
         return (
-            <button
-                type="button"
-                {...buttonProps}
-                onClick={this.handleModeChange}
-                disabled={this.context.isPortBusy}
-            >
-                {this.state.isActive ? stageStopChildren : stageStartChildren}
-            </button>
+            <div {...this.props} className={this.className}>
+                <span className="switcher-label">dev mode</span>
+                <span className="switcher-handle" onClick={this.handleModeChange} />
+            </div>
         );
     }
 
-    protected handleModeChange = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    protected get className(): string {
+        return [
+            "switcher",
+            this.props.className,
+            this.state.isActive && "active",
+            this.context.isPortBusy && "disabled"
+        ]
+            .filter((name) => name)
+            .join(" ")
+            .trim();
+    }
+
+    protected handleModeChange = (event: React.MouseEvent<HTMLDivElement>): void => {
+        if (this.context.isPortBusy) {
+            return;
+        }
         this.props.onClick && this.props.onClick(event);
 
         this.setState(({ isActive }) => ({

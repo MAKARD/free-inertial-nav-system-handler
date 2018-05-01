@@ -38,12 +38,14 @@ $tablet-laptop: $tablet, $laptop-not-large;
 
 $font-primary: 'Proxima Nova Regular', sans-serif;
 
-$font-color: #9de7fa;
-$font-color-active: #5cdeff;
+$bg-color-main: #2b2e3b;
+$bg-color-dark: #1c1f2a;
+$bg-color-mute: #373b4c;
+$bg-color-light: #3f455e;
 
-$color-primary: #2b2b38;
-$color-secondary: #404052;
-$color-secondary-active: #363655;
+$color-light: #00ffff;
+$color-main: #9ee9f8;
+$color-mute: #4c6c7f;
 
 $zindex-header: 500;
         // preloader       : 1100,

@@ -53,7 +53,6 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                 <PerfomanceStat />
                 <DataRecord>
                     <DataViewChart />
-                    <DataViewPlain />
                 </DataRecord>
             </ExpandController>
         );
