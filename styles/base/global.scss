@@ -1,0 +1,23 @@
+html {
+    height: 100%;
+
+    > body {
+        height: 100%;
+
+        > #content-overlay {
+            height: 100%;
+        }
+    }
+}
+
+body {
+    overflow-x: hidden;
+
+    font: 16px $font-primary;
+    font-weight: 300;
+    color: $color-main;
+}
+
+#content-overlay {
+    background-color: $bg-color-main;
+}

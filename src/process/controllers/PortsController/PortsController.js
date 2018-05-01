@@ -31,6 +31,8 @@ const PortsController = function () {
         if (state) {
             SerialPort.Binding = SerialPort.MockBinding;
             SerialPort.Binding.createPort("/dev/COM1", { echo: true, record: true });
+            SerialPort.Binding.createPort("/dev/COM2", { echo: true, record: true });
+            
         } else {
             SerialPort.Binding && SerialPort.Binding.reset();
             SerialPort.Binding = SerialPort.originBinding;

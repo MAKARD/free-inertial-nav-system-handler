@@ -19,10 +19,19 @@ export class AvailablePortsList extends React.Component<React.HTMLProps<HTMLDivE
                 value={this.context.selectedPort}
                 onChange={this.handlePortChange}
                 options={this.mappedPorts}
+                className={this.className}
+                noResultsText="No ports"
                 searchable={false}
                 clearable={false}
             />
         );
+    }
+
+    protected get className(): string {
+        return [this.props.className, this.context.isPortBusy && "disabled"]
+            .filter((name) => name)
+            .join(" ")
+            .trim();
     }
 
     protected get mappedPorts() {

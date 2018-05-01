@@ -35,33 +35,28 @@ $mobile-tablet: $mobile, $tablet;
 // Tablet & laptop
 $tablet-laptop: $tablet, $laptop-not-large;
 
-// Fonts
+
 $font-primary: 'Proxima Nova Regular', sans-serif;
 
-// Colors
-$color-primary: #696969;
-$color-secondary: #ffc60a;
+$bg-color-main: #2b2e3b;
+$bg-color-dark: #1c1f2a;
+$bg-color-mute: #373b4c;
+$bg-color-light: #3f455e;
 
-/**
-  Z-index
- */
-// z-index: map-get($zindex, ...);
-$zindex: (
-        preloader       : 1100,
-        modal           : 1000,
-        overlay         : 900,
-        hamburger       : 800,
-        responsive-nav  : 700,
-        popup           : 600,
-        header          : 500,
-        footer          : 400,
-        dropdown        : 300,
-        aside           : 200,
-);
+$color-light: #00ffff;
+$color-main: #9ee9f8;
+$color-mute: #4c6c7f;
+
+$zindex-header: 500;
+        // preloader       : 1100,
+        // modal           : 1000,
+        // overlay         : 900,
+        // hamburger       : 800,
+        // responsive-nav  : 700,
+        // popup           : 600,
+        
+        // footer          : 400,
+        // dropdown        : 300,
+        // aside           : 200,
 
 $under-zindex: -1;
-
-// Cols number
-$cols-number-mob: 3;
-$cols-number-tabletp: 2;
-$cols-number-tabletl: 4;

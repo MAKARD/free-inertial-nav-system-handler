@@ -1,0 +1,64 @@
+.btn {
+    display: inline-block;
+    
+    padding: 1em;
+
+    min-width: 115px;
+
+    cursor: pointer;
+
+    position: relative;
+
+    &:after {
+        content: "";
+
+        top: 0;
+        left: 0;
+        right: 0;
+        
+        width: 0;
+        height: 2px;
+
+        position: absolute;
+
+        background-color: $color-main;
+
+        transition: background-color .3s ease .3s, width .3s ease;
+    }
+
+    &_primary {
+        background-color: $bg-color-mute;
+        color: $color-main;
+
+        transition: all .5s ease;
+
+        &:hover,
+        &.active,
+        &.is-open {
+            background-color: $bg-color-light;
+            color: $color-light;
+
+            &:after {
+                width: 100%;
+
+                background-color: $color-light;
+            }
+        }
+    }
+
+    &.disabled,
+    &[disabled] {
+        color: $color-mute;
+
+        &:hover,
+        &.active,
+        &.is-open {
+            background-color: $bg-color-mute;
+            color: $color-mute;
+        }
+
+        &:after {
+            width: 0;
+        }
+    }
+}

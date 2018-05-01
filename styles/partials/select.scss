@@ -1,0 +1,52 @@
+.Select {
+    position: relative;
+
+    &.btn {
+        padding: 0;
+
+        > .Select-control {
+            padding: 1em;
+        }
+    }
+
+    > .Select-control {
+
+        .Select-placeholder,
+        .Select-value {
+            display: inline-block;
+        }
+    }
+
+    > .Select-menu-outer {
+        position: absolute;
+
+        top: 100%;
+        left: 0;
+        right: 0;
+
+        white-space: nowrap;
+
+        background-color: $bg-color-mute;
+        color: $color-main;
+
+        > .Select-menu {
+            
+            > .Select-option,
+            > .Select-noresults {
+                width: 100%;
+
+                text-overflow: ellipsis;
+                overflow: hidden;
+
+                padding: .5em 1em;
+
+                transition: all .5s ease;
+
+                &:hover {
+                    background-color: $bg-color-light;
+                    color: $color-light;
+                }
+            }
+        }
+    }
+}
