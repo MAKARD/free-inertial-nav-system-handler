@@ -98,7 +98,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
 
     public render(): React.ReactNode {
         if (!this.state.timeRange) {
-            return null;
+            return <span>No data provided</span>;
         }
 
         return (

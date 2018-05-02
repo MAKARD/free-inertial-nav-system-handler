@@ -1,0 +1,25 @@
+.tabs {
+    > .tabs-header {
+        position: relative;
+
+        display: flex;
+
+        &:before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            height: 1px;
+
+            background-color: $bg-color-mute;
+        }
+
+        > .btn {
+            flex-grow: 1;
+        }
+    }
+}

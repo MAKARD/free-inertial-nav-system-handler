@@ -14,7 +14,7 @@ export class Header extends React.Component {
                 <div className="control-menu">
                     <div className="control-menu__item">
                         <DevModeSwitcher >
-                            dev mode
+                            DevMode
                         </DevModeSwitcher>
                     </div>
                 </div>
