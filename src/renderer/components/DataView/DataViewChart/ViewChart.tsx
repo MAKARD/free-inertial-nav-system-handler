@@ -7,14 +7,16 @@ import {
     LineChart,
     Resizable,
     ChartRow,
-    Legend,
     Charts,
-    styler,
     YAxis
 } from "react-timeseries-charts";
 
 import { InternalSensor, Sensor, Axis } from "../../../sensors";
 import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
+
+import { markerStyle, markerLabelStyle, lineChartStyle } from "./helpers/stylers";
+import { handleFormatTimeAxis, legendCategories, getMappedDataAsEvents } from "./helpers/methods";
+import { Legend } from "./Legend";
 
 ChartRow.propTypes.trackerTimeFormat = PropTypes.any;
 ChartRow.propTypes.timeFormat = PropTypes.any;
@@ -46,11 +48,6 @@ export interface ViewChartState {
 export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
     public static readonly contextTypes = LayoutContextTypes;
     public static readonly propTypes = ViewChartPropTypes;
-    public static readonly colorScheme = {
-        [Axis.y]: "green",
-        [Axis.z]: "blue",
-        [Axis.x]: "red"
-    };
 
     public series = new TimeSeries({
         name: this.props.internalSensorName + this.props.sensor.id,
@@ -74,7 +71,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
             if (!this.state.all) {
                 this.series = new TimeSeries({
                     name: this.props.internalSensorName + this.props.sensor.id,
-                    events: this.getMappedDataAsEvents(this.props.sensor[this.props.internalSensorName].pull())
+                    events: getMappedDataAsEvents(this.props.sensor[this.props.internalSensorName].pull())
                 });
 
                 this.setState({
@@ -87,7 +84,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
 
         this.series = new TimeSeries({
             name: this.props.internalSensorName + this.props.sensor.id,
-            events: this.getMappedDataAsEvents(this.props.sensor[this.props.internalSensorName].get())
+            events: getMappedDataAsEvents(this.props.sensor[this.props.internalSensorName].get())
         });
 
         this.setState({
@@ -103,11 +100,12 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
 
         return (
             <React.Fragment>
-                <Legend
-                    onSelectionChange={this.handleActiveAxisChanged}
-                    categories={this.legendCategories}
-                    style={this.legendStyle}
-                />
+                <div className="legend-wrap">
+                    <Legend
+                        axis={this.state.activeAxis}
+                        onSelectionChange={this.handleActiveAxisChanged}
+                    />
+                </div>
                 <Resizable className="chart">
                     <ChartContainer
                         onTimeRangeChanged={this.handleTimeRangeChange}
@@ -115,7 +113,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                         onTrackerChanged={this.handleTrackerChanged}
                         minTime={this.series.range().begin()}
                         maxTime={this.series.range().end()}
-                        format={this.handleFormatTimeAxis}
+                        format={handleFormatTimeAxis}
                         timeRange={this.state.timeRange}
                         minDuration={250}
                     >
@@ -130,7 +128,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                             <Charts>
                                 <LineChart
                                     columns={this.chartColumns}
-                                    style={this.lineChartStyle}
+                                    style={lineChartStyle()}
                                     series={this.series}
                                     axis="y"
                                 />
@@ -143,24 +141,8 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         );
     }
 
-    protected get legendCategories(): Array<{ label: string; key: string }> {
-        return Object.keys(Axis).map((key) => ({ label: `axis ${key}`, key }));
-    }
-
-    protected get legendStyle(): styler {
-        return styler(Object.keys(Axis).map((key) => ({ key, color: ViewChart.colorScheme[key], width: 1 })));
-    }
-
     protected get chartColumns(): Array<string> {
         return Object.keys(this.state.activeAxis).filter((axis) => this.state.activeAxis[axis]);
-    }
-
-    protected get lineChartStyle(): styler {
-        return styler(Object.keys(Axis).map((key) => ({ key, color: ViewChart.colorScheme[key], width: 2 })));
-    }
-
-    protected getMappedDataAsEvents = (sensorData: Array<InternalSensor>): Array<TimeEvent> => {
-        return sensorData.map(({ time, axis }) => new TimeEvent(time, { ...axis }));
     }
 
     protected getTrackerInfo = (axis: string): string => (
@@ -171,8 +153,6 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
     protected getAxisYLimit = (type: "min" | "max"): number => (
         Math[type].apply(Math, this.chartColumns.map((axis) => this.series[type](axis)))
     )
-
-    protected handleFormatTimeAxis = (date: Date): string => `${date.getTime() / 1000}c`;
 
     protected handleTimeRangeChange = (timeRange): void => this.setState({ timeRange });
 
@@ -193,8 +173,8 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         return this.chartColumns.map((axis) => (
             <EventMarker
                 markerLabel={this.state.tracker && this.getTrackerInfo(axis)}
-                markerLabelStyle={{ fill: ViewChart.colorScheme[axis] }}
-                markerStyle={{ fill: ViewChart.colorScheme[axis] }}
+                markerLabelStyle={markerLabelStyle(axis)}
+                markerStyle={markerStyle(axis)}
                 event={this.state.tracker}
                 markerLabelAlign="top"
                 markerRadius={3}
@@ -206,4 +186,3 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         ));
     }
 }
-// tslint:disable-next-line
