@@ -1,47 +1,46 @@
 import * as React from "react";
 
 import {
+    PortsControlProviderContextTypes,
+    PortsControlProviderContext,
     AvailablePortsList,
     PortsListenControl,
     UpdatePortsList,
-    DevModeSwitcher
+    DevModeSwitcher,
 } from "../../PortsControl";
 
 export class Header extends React.Component {
+    public static readonly contextTypes = PortsControlProviderContextTypes;
+
+    public readonly context: PortsControlProviderContext;
+
     public render(): React.ReactNode {
         return (
             <header>
                 <div className="control-menu">
-                    <div className="control-menu__item">
-                        <DevModeSwitcher >
-                            DevMode
-                        </DevModeSwitcher>
-                    </div>
+                    <DevModeSwitcher >
+                        DevMode
+                    </DevModeSwitcher>
                 </div>
                 <div className="control-menu">
-                    <div className="control-menu__item">
-                        <AvailablePortsList
-                            className="btn btn_primary"
-                            placeholder="Select port"
-                        />
-                    </div>
+                    <AvailablePortsList
+                        className="btn btn_primary"
+                        placeholder="Select port"
+                    />
                 </div>
                 <div className="control-menu">
-                    <div className="control-menu__item">
-                        <PortsListenControl
-                            className="btn btn_primary"
-                            stageStartChildren="Start"
-                            stageStopChildren="Stop"
-                        />
-                    </div>
+                    <PortsListenControl
+                        className="btn btn_primary"
+                        stageStartChildren="Start"
+                        stageStopChildren="Stop"
+                    />
                 </div>
                 <div className="control-menu">
-                    <div className="control-menu__item">
-                        <UpdatePortsList className="btn btn_primary">
-                            Refresh ports
-                        </UpdatePortsList>
-                    </div>
+                    <UpdatePortsList className="btn btn_primary">
+                        Refresh ports
+                    </UpdatePortsList>
                 </div>
+                <div className={`loader${this.context.isPortBusy ? " active" : ""}`} />
             </header>
         );
     }

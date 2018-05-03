@@ -9,7 +9,7 @@ const colorScheme = {
 };
 
 export const lineChartStyle = (): styler => (
-    styler(Object.keys(Axis).map((key) => ({ key, color: colorScheme[key], width: 1 })))
+    styler(Object.keys(Axis).map((key) => ({ key, color: colorScheme[key], width: 2 })))
 )
 
 export const markerLabelStyle = (axis: string) => ({
@@ -17,5 +17,5 @@ export const markerLabelStyle = (axis: string) => ({
 })
 
 export const markerStyle = (axis: string) => ({
-    fill: colorScheme[axis]
+    stroke: colorScheme[axis],
 })

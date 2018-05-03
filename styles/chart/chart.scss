@@ -1,3 +1,43 @@
+.chart {
+    path:first-child {
+        opacity: 1 !important;
+    }
+
+    .yaxis {
+        path {
+            stroke: $color-light !important;
+            stroke-width: 2px !important;
+        }
+    }
+
+    line {
+        stroke: $color-light !important;
+    }
+
+    .tick {
+        text {
+            fill: $color-main !important;
+        }
+    }
+
+    g:not(.tick) {
+        
+        > text {
+            stroke-width: 0 !important;
+
+            font-size: 13px !important;
+            font-weight: 600 !important;
+
+            transform: translateY(-3px) !important;
+        }
+
+        > circle {
+            stroke-width: 2px !important;
+            fill: $bg-color-main !important;
+        }
+    }
+}
+
 .legend-wrap {
     > button {
         > .marker {

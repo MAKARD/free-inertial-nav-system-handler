@@ -31,6 +31,10 @@ export class Legend extends React.Component<LegendProps> {
     }
 
     protected handleClick = (name: string) => (): void => {
+        if (this.hasLastActive && this.props.axis[name]) {
+            return;
+        }
+
         this.props.onSelectionChange(name);
     }
 
@@ -38,5 +42,12 @@ export class Legend extends React.Component<LegendProps> {
         return ["legend-item", name, this.props.axis[name] ? "on" : "off"]
             .join(" ")
             .trim();
+    }
+
+    protected get hasLastActive(): boolean {
+        return Number(Object.values(this.props.axis)
+            .reduce((prev, next) => {
+                return Number(prev) + Number(next) as any;
+            })) === 1;
     }
 }

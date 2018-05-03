@@ -18,12 +18,6 @@ export class DataViewChart extends React.Component {
     public render(): React.ReactNode {
         return (
             <div className="tabs">
-                <button
-                    onClick={this.handleSave}
-                    disabled={this.context.isPortListened}
-                >
-                    save
-                </button>
                 <TabsController>
                     <div className="tabs-header">
                         <this.Headers />
@@ -35,7 +29,12 @@ export class DataViewChart extends React.Component {
     }
 
     protected handleSave = (): void => {
-        saveSvgAsPng(document.querySelector(".chart > svg"), "diagram.png")
+        const element = document.querySelector(".chart > svg");
+        const date = new Date();
+        element && saveSvgAsPng(
+            element,
+            `diagram-${date.toLocaleDateString()}-${date.toLocaleTimeString()}.png`
+        );
     }
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
@@ -77,6 +76,13 @@ export class DataViewChart extends React.Component {
                             Accelerometer
                         </Header>
                     </div>
+                    <button
+                        onClick={this.handleSave}
+                        disabled={this.context.isPortListened}
+                        className="btn btn_secondary"
+                    >
+                        Save
+                    </button>
                     <Tab expandId="gyroscope" className="chart-view">
                         <ViewChart sensor={sensor} internalSensorName="gyroscope" />
                     </Tab>

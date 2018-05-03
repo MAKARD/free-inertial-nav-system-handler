@@ -113,8 +113,8 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                         onTrackerChanged={this.handleTrackerChanged}
                         minTime={this.series.range().begin()}
                         maxTime={this.series.range().end()}
-                        format={handleFormatTimeAxis}
                         timeRange={this.state.timeRange}
+                        format={handleFormatTimeAxis}
                         minDuration={250}
                     >
                         <ChartRow height="400" transition={500}>
@@ -146,8 +146,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
     }
 
     protected getTrackerInfo = (axis: string): string => (
-        `Time: ${this.state.tracker.timestamp().getTime() / 1000}c;
-        Value: ${this.state.tracker.get(axis)}`
+        `[${this.state.tracker.timestamp().getTime() / 1000}c / ${this.state.tracker.get(axis)}]`
     );
 
     protected getAxisYLimit = (type: "min" | "max"): number => (
@@ -177,7 +176,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                 markerStyle={markerStyle(axis)}
                 event={this.state.tracker}
                 markerLabelAlign="top"
-                markerRadius={3}
+                markerRadius={4}
                 column={axis}
                 type="point"
                 key={axis}
