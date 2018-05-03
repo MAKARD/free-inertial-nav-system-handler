@@ -6,12 +6,23 @@ html {
 
         > #content-overlay {
             height: 100%;
+
+            display: flex;
+            flex-direction: column;
+
+            > .content {
+                height: 100%;
+
+                padding: 3em 2em;
+
+                overflow: hidden;
+            }
         }
     }
 }
 
 body {
-    overflow-x: hidden;
+    overflow: hidden;
 
     font: 16px $font-primary;
     font-weight: 300;

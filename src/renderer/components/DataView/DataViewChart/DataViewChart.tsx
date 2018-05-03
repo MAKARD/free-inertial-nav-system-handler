@@ -17,28 +17,34 @@ export class DataViewChart extends React.Component {
 
     public render(): React.ReactNode {
         return (
-            <React.Fragment>
-                <button
-                    onClick={this.handleSave}
-                    disabled={this.context.isPortListened}
-                >
-                    save
-                </button>
+            <div className="tabs">
                 <TabsController>
-                    <this.Headers />
+                    <div className="tabs-header">
+                        <this.Headers />
+                    </div>
                     <this.Tabs />
                 </TabsController>
-            </React.Fragment>
+            </div>
         );
     }
 
     protected handleSave = (): void => {
-        saveSvgAsPng(document.querySelector(".chart > svg"), "diagram.png")
+        const element = document.querySelector(".chart > svg");
+        const date = new Date();
+        element && saveSvgAsPng(
+            element,
+            `diagram-${date.toLocaleDateString()}-${date.toLocaleTimeString()}.png`
+        );
     }
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map(({ id }) => (
-            <Header expandId={`sensor_view_chart_${id}`} key={id}>
+            <Header
+                expandId={`sensor_view_chart_${id}`}
+                className="btn btn_secondary"
+                activeClassName="active"
+                key={id}
+            >
                 Sensor {id}
             </Header>
         ));
@@ -52,23 +58,38 @@ export class DataViewChart extends React.Component {
 
     protected Tabs: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map((sensor) => (
-            <Tab expandId={`sensor_view_chart_${sensor.id}`} key={sensor.id}>
-                <div>
-                    <TabsController>
-                        <Header expandId="gyroscope">
-                            gyroscope
+            <Tab className="chart-wrap" expandId={`sensor_view_chart_${sensor.id}`} key={sensor.id}>
+                <TabsController>
+                    <div className="btn-group">
+                        <Header
+                            className="btn btn_primary"
+                            activeClassName="active"
+                            expandId="gyroscope"
+                        >
+                            Gyroscope
                         </Header>
-                        <Header expandId="accelerometer">
-                            accelerometer
+                        <Header
+                            className="btn btn_primary"
+                            activeClassName="active"
+                            expandId="accelerometer"
+                        >
+                            Accelerometer
                         </Header>
-                        <Tab expandId="gyroscope">
-                            <ViewChart sensor={sensor} internalSensorName="gyroscope" />
-                        </Tab>
-                        <Tab expandId="accelerometer">
-                            <ViewChart sensor={sensor} internalSensorName="accelerometer" />
-                        </Tab>
-                    </TabsController>
-                </div>
+                    </div>
+                    <button
+                        onClick={this.handleSave}
+                        disabled={this.context.isPortListened}
+                        className="btn btn_secondary"
+                    >
+                        Save
+                    </button>
+                    <Tab expandId="gyroscope" className="chart-view">
+                        <ViewChart sensor={sensor} internalSensorName="gyroscope" />
+                    </Tab>
+                    <Tab expandId="accelerometer" className="chart-view">
+                        <ViewChart sensor={sensor} internalSensorName="accelerometer" />
+                    </Tab>
+                </TabsController>
             </Tab>
         ));
 

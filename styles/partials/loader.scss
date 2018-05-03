@@ -1,0 +1,26 @@
+.loader {
+    height: 1px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+
+    &:before {
+        content: "";
+        position: absolute;
+        left: -200px;
+        width: 200px;
+        height: 1px;
+        background-color: $color-main;
+        animation: loading 3s linear infinite;
+
+        opacity: 0;
+
+        transition: opacity .3s ease;
+    }
+
+    &.active {
+        &:before {
+            opacity: 1;
+        }
+    }
+}

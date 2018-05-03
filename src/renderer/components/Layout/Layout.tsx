@@ -50,10 +50,11 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                 <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
                 </PortsControlProvider>
-                <PerfomanceStat />
-                <DataRecord>
-                    <DataViewChart />
-                </DataRecord>
+                <div className="content">
+                    <DataRecord>
+                        <DataViewChart />
+                    </DataRecord>
+                </div>
             </ExpandController>
         );
     }

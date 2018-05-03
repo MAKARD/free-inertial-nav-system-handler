@@ -10,6 +10,10 @@
 @import "base/mixins";
 
 @import "header/header";
+@import "chart/chart";
+@import "tabs/tabs";
+
 @import "partials/switcher";
 @import "partials/buttons";
 @import "partials/select";
+@import "partials/loader";

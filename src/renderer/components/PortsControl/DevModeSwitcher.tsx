@@ -22,7 +22,7 @@ export class DevModeSwitcher extends React.Component<React.HTMLProps<HTMLDivElem
     public render(): JSX.Element {
         return (
             <div {...this.props} className={this.className}>
-                <span className="switcher-label">dev mode</span>
+                <span className="switcher-label">{this.props.children}</span>
                 <span className="switcher-handle" onClick={this.handleModeChange} />
             </div>
         );
