@@ -23,12 +23,12 @@ ChartRow.propTypes.timeFormat = PropTypes.any;
 
 export interface ViewChartProps {
     sensor: Sensor;
-    internalSensorName: "accelerometer" | "gyroscope";
+    internalSensorName: "accelerometer" | "gyroscope" | "angles";
 }
 
 export const ViewChartPropTypes: {[P in keyof ViewChartProps]: PropTypes.Validator<any>} = {
     sensor: PropTypes.instanceOf(Sensor).isRequired,
-    internalSensorName: PropTypes.oneOf(["accelerometer", "gyroscope"]).isRequired
+    internalSensorName: PropTypes.oneOf(["accelerometer", "gyroscope", "angles"]).isRequired
 }
 
 export interface ViewChartState {

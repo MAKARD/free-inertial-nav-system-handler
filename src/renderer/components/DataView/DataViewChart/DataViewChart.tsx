@@ -75,16 +75,19 @@ export class DataViewChart extends React.Component {
                         >
                             Accelerometer
                         </Header>
+                        <Header
+                            className="btn btn_primary"
+                            activeClassName="active"
+                            expandId="angles"
+                        >
+                            Angles
+                        </Header>
                     </div>
-                    <button
-                        onClick={this.handleSave}
-                        disabled={this.context.isPortListened}
-                        className="btn btn_secondary"
-                    >
-                        Save
-                    </button>
                     <Tab expandId="gyroscope" className="chart-view">
                         <ViewChart sensor={sensor} internalSensorName="gyroscope" />
+                    </Tab>
+                    <Tab expandId="angles" className="chart-view">
+                        <ViewChart sensor={sensor} internalSensorName="angles" />
                     </Tab>
                     <Tab expandId="accelerometer" className="chart-view">
                         <ViewChart sensor={sensor} internalSensorName="accelerometer" />
@@ -95,6 +98,13 @@ export class DataViewChart extends React.Component {
 
         return (
             <React.Fragment>
+                <button
+                    onClick={this.handleSave}
+                    disabled={this.context.isPortListened}
+                    className="btn btn_secondary"
+                >
+                    Save
+                </button>
                 {list}
             </React.Fragment>
         );
