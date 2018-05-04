@@ -12,6 +12,7 @@ export interface SensorProps {
 export interface SensorDataProps {
   acc: SensorAxisProps;
   gyro: SensorAxisProps;
+  angles: SensorAxisProps;
 }
 
 export const SensorPropTypes: {[P in keyof SensorProps]: PropTypes.Validator<any>} = {
@@ -20,7 +21,8 @@ export const SensorPropTypes: {[P in keyof SensorProps]: PropTypes.Validator<any
 
 export const SensorDataPropTypes: {[P in keyof SensorDataProps]: PropTypes.Validator<any>} = {
   acc: PropTypes.shape(SensorAxisPropTypes).isRequired,
-  gyro: PropTypes.shape(SensorAxisPropTypes).isRequired
+  gyro: PropTypes.shape(SensorAxisPropTypes).isRequired,
+  angles: PropTypes.shape(SensorAxisPropTypes).isRequired
 };
 
 export interface InternalSensor {
@@ -32,6 +34,8 @@ export class Sensor extends TypedClass {
   public id: number;
   public state: boolean = true;
   public dataLength: number = 0;
+
+  public angles: DataRepository;
   public gyroscope: DataRepository;
   public accelerometer: DataRepository;
 
@@ -45,6 +49,7 @@ export class Sensor extends TypedClass {
     this.id = props.id;
     this.attemptsList = (new Array(DataRecordControl.readAttemptsCount).fill(true));
 
+    this.angles = new DataRepository(DataRecordControl.activeRecordLimit, `angles_${this.id}`);
     this.accelerometer = new DataRepository(DataRecordControl.activeRecordLimit, `acc_${this.id}`);
     this.gyroscope = new DataRepository(DataRecordControl.activeRecordLimit, `gyro_${this.id}`);
   }
@@ -53,6 +58,7 @@ export class Sensor extends TypedClass {
     this.checkTypes(data, SensorDataPropTypes);
 
     if (this.state) {
+      this.angles.put({ time: this.timeTick, axis: new SensorAxis(data.angles) });
       this.gyroscope.put({ time: this.timeTick, axis: new SensorAxis(data.gyro) });
       this.accelerometer.put({ time: this.timeTick, axis: new SensorAxis(data.acc) });
       this.dataLength++;

@@ -23,12 +23,12 @@ ChartRow.propTypes.timeFormat = PropTypes.any;
 
 export interface ViewChartProps {
     sensor: Sensor;
-    internalSensorName: "accelerometer" | "gyroscope";
+    internalSensorName: "accelerometer" | "gyroscope" | "angles";
 }
 
 export const ViewChartPropTypes: {[P in keyof ViewChartProps]: PropTypes.Validator<any>} = {
     sensor: PropTypes.instanceOf(Sensor).isRequired,
-    internalSensorName: PropTypes.oneOf(["accelerometer", "gyroscope"]).isRequired
+    internalSensorName: PropTypes.oneOf(["accelerometer", "gyroscope", "angles"]).isRequired
 }
 
 export interface ViewChartState {
@@ -66,7 +66,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         all: false
     };
 
-    public componentWillReceiveProps() {
+    public componentWillReceiveProps(nextProps: ViewChartProps) {
         if (!this.context.isPortListened) {
             if (!this.state.all) {
                 this.series = new TimeSeries({
@@ -79,7 +79,10 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                     all: true
                 });
             }
-            return;
+
+            if (this.props.internalSensorName === nextProps.internalSensorName) {
+                return;
+            }
         }
 
         this.series = new TimeSeries({

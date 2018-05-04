@@ -7,25 +7,65 @@ import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
 import { DataRecordContext, DataRecordContextTypes } from "../../DataRecord";
 import { ViewChart } from "./ViewChart";
 
-export class DataViewChart extends React.Component {
+export interface DataViewChartState {
+    activeInternalSensor: "accelerometer" | "gyroscope" | "angles";
+}
+
+export class DataViewChart extends React.Component<{}, DataViewChartState> {
     public static readonly contextTypes = {
         ...DataRecordContextTypes,
         ...LayoutContextTypes
     };
 
     public readonly context: DataRecordContext & LayoutContext;
+    public readonly state: DataViewChartState = {
+        activeInternalSensor: "accelerometer"
+    };
 
     public render(): React.ReactNode {
         return (
             <div className="tabs">
                 <TabsController>
-                    <div className="tabs-header">
-                        <this.Headers />
+                    <this.Headers />
+                    <div className="btn-group">
+                        <button
+                            type="button"
+                            onClick={this.handleInternalSensorChange("gyroscope")}
+                            className={this.getButtonClassActiveClassName("gyroscope")}
+                        >
+                            Gyroscope
+                        </button>
+                        <button
+                            type="button"
+                            onClick={this.handleInternalSensorChange("accelerometer")}
+                            className={this.getButtonClassActiveClassName("accelerometer")}
+                        >
+                            Accelerometer
+                        </button>
+                        <button
+                            type="button"
+                            onClick={this.handleInternalSensorChange("angles")}
+                            className={this.getButtonClassActiveClassName("angles")}
+                        >
+                            Angles
+                        </button>
                     </div>
+                    <button
+                        type="button"
+                        onClick={this.handleSave}
+                        className="btn btn_secondary"
+                        disabled={this.context.isPortListened}
+                    >
+                        Save
+                    </button>
                     <this.Tabs />
                 </TabsController>
             </div>
         );
+    }
+
+    protected getButtonClassActiveClassName = (name: DataViewChartState["activeInternalSensor"]): string => {
+        return `btn btn_primary${this.state.activeInternalSensor === name ? " active" : ""}`;
     }
 
     protected handleSave = (): void => {
@@ -35,6 +75,12 @@ export class DataViewChart extends React.Component {
             element,
             `diagram-${date.toLocaleDateString()}-${date.toLocaleTimeString()}.png`
         );
+    }
+
+    protected handleInternalSensorChange = (name: DataViewChartState["activeInternalSensor"]) => (): void => {
+        this.setState({
+            activeInternalSensor: name
+        });
     }
 
     protected Headers: React.SFC<{}> = (): JSX.Element => {
@@ -50,46 +96,16 @@ export class DataViewChart extends React.Component {
         ));
 
         return (
-            <React.Fragment>
+            <div className="tabs-header">
                 {list}
-            </React.Fragment>
+            </div>
         );
     }
 
     protected Tabs: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map((sensor) => (
             <Tab className="chart-wrap" expandId={`sensor_view_chart_${sensor.id}`} key={sensor.id}>
-                <TabsController>
-                    <div className="btn-group">
-                        <Header
-                            className="btn btn_primary"
-                            activeClassName="active"
-                            expandId="gyroscope"
-                        >
-                            Gyroscope
-                        </Header>
-                        <Header
-                            className="btn btn_primary"
-                            activeClassName="active"
-                            expandId="accelerometer"
-                        >
-                            Accelerometer
-                        </Header>
-                    </div>
-                    <button
-                        onClick={this.handleSave}
-                        disabled={this.context.isPortListened}
-                        className="btn btn_secondary"
-                    >
-                        Save
-                    </button>
-                    <Tab expandId="gyroscope" className="chart-view">
-                        <ViewChart sensor={sensor} internalSensorName="gyroscope" />
-                    </Tab>
-                    <Tab expandId="accelerometer" className="chart-view">
-                        <ViewChart sensor={sensor} internalSensorName="accelerometer" />
-                    </Tab>
-                </TabsController>
+                <ViewChart sensor={sensor} internalSensorName={this.state.activeInternalSensor} />
             </Tab>
         ));
 
