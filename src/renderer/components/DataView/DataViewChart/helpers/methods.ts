@@ -12,7 +12,9 @@ export const legendCategories = (axistState: { [key: string]: boolean }):
     )
 
 export const getMappedDataAsEvents = (sensorData: Array<InternalSensor>): Array<TimeEvent> => (
-    sensorData.map(({ time, axis }) => new TimeEvent(time, { ...axis }))
+    sensorData.map(({ time, axis }) => {
+        return new TimeEvent(time, { ...axis });
+    })
 )
 
 export const handleFormatTimeAxis = (date: Date): string => `${date.getTime() / 1000}c`;

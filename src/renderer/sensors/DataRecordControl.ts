@@ -6,15 +6,14 @@ export interface LostPackage {
 }
 
 export class DataRecordControl {
-    public static readonly readInterval = 250; // ms
     public static readonly maxSensorsCount = 4;
-    public static readonly readAttemptsCount = 4; // 1s: 250ms * 4
+    public static readonly readAttemptsCount = 4; // ~2s
     public static readonly activeRecordLimit = 40;
 
     public sensors: Array<Sensor> = this.emptySensorsArray;
     public lostPackages: Array<LostPackage> = [];
 
-    public getSensorById = (searchId: number): Sensor | never => {
+    public getSensorById = (searchId: string): Sensor | never => {
         const founded = this.sensors.find(({ id }) => id === searchId);
 
         if (!founded) {
@@ -24,13 +23,13 @@ export class DataRecordControl {
         return founded;
     }
 
-    public writeSensorsData = (parsedMessage: Array<SensorProps & { data: SensorDataProps; }>): void | never => {
+    public writeSensorsData = (parsedMessage: Array<SensorProps>): void | never => {
         this.sensors.forEach((sensor) => {
             const founded = parsedMessage.find((parsedSensor) => parsedSensor.id === sensor.id);
 
             if (founded) {
                 try {
-                    sensor.writeData(founded.data);
+                    sensor.writeData(founded.data, founded.time);
                 } catch (error) {
                     this.writeLostPackage(error);
                 }
@@ -51,8 +50,11 @@ export class DataRecordControl {
     }
 
     private get emptySensorsArray(): Array<Sensor> {
-        return (new Array(DataRecordControl.maxSensorsCount))
-            .fill({})
-            .map((x, i) => new Sensor({ id: i + 1 }));
+        return [
+            new Sensor({ id: "00" }),
+            new Sensor({ id: "01" }),
+            new Sensor({ id: "10" }),
+            new Sensor({ id: "11" })
+        ]
     }
 }

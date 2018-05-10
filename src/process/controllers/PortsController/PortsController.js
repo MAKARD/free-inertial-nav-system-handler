@@ -13,7 +13,7 @@ SerialPort.MockBinding = require("serialport/test").Binding;
 SerialPort.Binding = SerialPort.originBinding;
 
 // must be the same as on arduino
-const delay = 250;
+const delay = 540;
 
 const PortsController = function () {
     port = {
@@ -64,6 +64,7 @@ const PortsController = function () {
 
     sendData = (event) => (data) => {
         const currentData = Buffer.from(data).toString().trim();
+        
         if (currentData !== "$") {
             message += currentData;
         } else {

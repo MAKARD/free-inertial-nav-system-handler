@@ -57,7 +57,7 @@ export class DataRecord extends React.Component {
     }
 
     protected handleListenPort = (event: Electron.Event, message: string): void => {
-        let parsedMessage: Array<SensorProps & { data: SensorDataProps; }>;
+        let parsedMessage: Array<SensorProps & { data: SensorDataProps; time: number }>;
         try {
             parsedMessage = JSON.parse(message);
         } catch (error) {
