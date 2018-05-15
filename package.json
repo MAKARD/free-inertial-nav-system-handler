@@ -67,6 +67,7 @@
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.4",
     "cssnano": "^3.10.0",
+    "dotenv": "^5.0.1",
     "electron": "1.7.12",
     "electron-packager": "^10.1.2",
     "electron-rebuild": "^1.7.3",

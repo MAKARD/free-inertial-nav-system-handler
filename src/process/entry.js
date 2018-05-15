@@ -1,5 +1,7 @@
 const { app } = require("electron");
 
+require("dotenv").config();
+
 const MainWindow = new (require("./MainWindow"))({
     width: 800,
     height: 600,

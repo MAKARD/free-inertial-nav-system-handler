@@ -30,7 +30,7 @@ const config = {
     node: {
         fs: "empty"
     },
-    target: 'electron',
+    target: "electron",
 
     devServer: {
         historyApiFallback: true,

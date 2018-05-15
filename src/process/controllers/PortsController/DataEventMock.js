@@ -1,11 +1,19 @@
-const DataMock = require("../../data/DataMock.js");
+const request = require("request");
 
 const DataEventMock = function () {
     let timer;
     let iterator = 0;
-    const formattedData = DataMock.split("$");
+    let formattedData;
+
+    const getData = () => new Promise((resolve) => {
+        request.get(process.env.STATIC_DATA, (error, response, body) => resolve(body));
+    });
 
     this.startEvent = async (port, delay) => {
+        if (!formattedData) {
+           formattedData = (await getData()).split("$");
+        }
+
         if (typeof delay !== "number") {
             throw Error("Delay must be number");
         }
