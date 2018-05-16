@@ -2,6 +2,7 @@ import "../../styles/main.scss";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
 
 import { Layout } from "./components";
 
@@ -12,7 +13,9 @@ if (!container) {
     console.error("Can not found element for mounting Layout!");
 } else {
     ReactDOM.render(
-        <Layout />,
+        <BrowserRouter>
+            <Layout />
+        </BrowserRouter>,
         container
     );
 }

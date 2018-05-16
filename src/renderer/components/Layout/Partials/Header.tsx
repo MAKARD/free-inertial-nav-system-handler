@@ -8,6 +8,7 @@ import {
     UpdatePortsList,
     DevModeSwitcher,
 } from "../../PortsControl";
+import { ExpandControl } from "react-expand";
 
 export class Header extends React.Component {
     public static readonly contextTypes = PortsControlProviderContextTypes;
@@ -40,6 +41,7 @@ export class Header extends React.Component {
                         Refresh ports
                     </UpdatePortsList>
                 </div>
+                <ExpandControl expandId="menu" className="menu-control"/>
                 <div className={`loader${this.context.isPortBusy ? " active" : ""}`} />
             </header>
         );

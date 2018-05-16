@@ -1,9 +1,11 @@
 import * as React from "react";
 import * as Electron from "electron";
-import { ExpandController } from "react-expand";
+import { Switch, Route, Redirect } from "react-router";
+import { ExpandController, ControlledExpandElement } from "react-expand";
 
 import { Header } from "./Partials";
 
+import { Menu } from "../Menu";
 import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
 import { PortsControlProvider } from "../PortsControl";
@@ -50,9 +52,15 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                 <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
                 </PortsControlProvider>
+                <ControlledExpandElement expandId="menu">
+                    <Menu />
+                </ControlledExpandElement>
                 <div className="content">
                     <DataRecord>
-                        <DataViewChart />
+                        <Switch>
+                            <Route path="/real-time-chart" component={DataViewChart} />
+                            <Redirect to="/real-time-chart" />
+                        </Switch>
                     </DataRecord>
                 </div>
             </ExpandController>
