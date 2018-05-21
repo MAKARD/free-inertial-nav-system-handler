@@ -1,3 +1,3 @@
 export * from "./MatrixMath";
-export * from "./eulerAngles";
+export * from "./toRadians";
 export * from "./EulerOrientationAlgorithm";

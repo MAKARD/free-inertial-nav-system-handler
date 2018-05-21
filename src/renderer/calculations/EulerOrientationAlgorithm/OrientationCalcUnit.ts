@@ -23,8 +23,8 @@ export function OrientationCalcUnit(data: WxyzInterface): Array<{ axis: SensorAx
             time,
             axis: {
                 x,
-                y: yIntegrator(Math.cos(x[i]) * commonProduct, time),
-                z: feedback = zIntegrator(Wzr[i] - Math.tan(x[i]) * commonProduct, time)
+                y: yIntegrator(Math.cos(x) * commonProduct, time),
+                z: feedback = zIntegrator(Wzr - Math.tan(x) * commonProduct, time)
             }
         }
     });

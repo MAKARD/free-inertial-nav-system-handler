@@ -9,16 +9,13 @@ export type WxyzInterface = Array<{
 
 const derivate = () => {
     let prevU = 0;
-    let prevT = 0;
 
-    return (dataU: number, dataT: number) => {
+    return (dataU: number, time: number) => {
         const deltaU = dataU - prevU;
-        const deltaT = dataT - prevT;
 
-        prevT = dataT;
         prevU = dataU;
 
-        return deltaU / deltaT;
+        return deltaU / time;
     }
 }
 

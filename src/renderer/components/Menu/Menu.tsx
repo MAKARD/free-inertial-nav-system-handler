@@ -11,13 +11,13 @@ export class Menu extends React.Component {
                     </NavLink>
                 </li>
                 <li className="menu-item">
-                    <NavLink to="/euler-algorithm">
-                        Euler algorithm orientation
+                    <NavLink to="/orientation-calc">
+                        Orientation calculation
                     </NavLink>
                 </li>
                 <li className="menu-item">
-                    <NavLink to="/poisson-algorithm">
-                        Poisson algorithm orientation
+                    <NavLink to="/settings">
+                        Settings
                     </NavLink>
                 </li>
             </menu>

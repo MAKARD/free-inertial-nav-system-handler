@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 
 import { SensorAxis, SensorAxisProps, SensorAxisPropTypes } from "./SensorAxis";
-import { eulterAngles } from "../../calculations/eulerAngles";
+import { toRadians } from "../../calculations/toRadians";
 import { DataRecordControl } from "../DataRecordControl";
 import { DataRepository } from "../DataRepository";
 import { TypedClass } from "../TypedClass";
@@ -42,11 +42,14 @@ export class Sensor extends TypedClass {
   public gyroscope: DataRepository;
   public angles: DataRepository;
 
+  public offsetAccelerometer = { x: 0, y: 0, z: 0 };
+  public offsetGyroscope = { x: 0, y: 0, z: 0 };
+
   private attemptsList: Array<boolean> = [];
   private currentAttempt = 0;
   private timeTick = 0;
 
-  private getEulerAngels = eulterAngles(0.5);
+  private getRadiansAngels = toRadians(0.05);
 
   constructor(props: { id: string }) {
     super(props, { id: PropTypes.string.isRequired });
@@ -59,15 +62,29 @@ export class Sensor extends TypedClass {
     this.angles = new DataRepository(DataRecordControl.activeRecordLimit, `angles_${this.id}`);
   }
 
+  public setOffsetGyroscope = (axis: "x" | "y" | "z", value: number): void => {
+    this.offsetGyroscope[axis] = value;
+  }
+
+  public setOffsetAccelerometer = (axis: "x" | "y" | "z", value: number): void => {
+    this.offsetAccelerometer[axis] = value;
+  }
+
   public writeData = (data: SensorDataProps, time: number): void | never => {
     this.checkTypes(data, SensorDataPropTypes);
 
     this.timeTick += time;
 
     if (this.state) {
-      this.angles.put({ time: this.timeTick, axis: new SensorAxis(this.getEulerAngels(data, time / 100)) });
-      this.accelerometer.put({ time: this.timeTick, axis: new SensorAxis(data.acc) });
-      this.gyroscope.put({ time: this.timeTick, axis: new SensorAxis(data.gyro) });
+      this.angles.put({ time: this.timeTick, axis: new SensorAxis(this.getRadiansAngels(data, time / 1000)) });
+      this.accelerometer.put({
+        time: this.timeTick,
+        axis: new SensorAxis(this.applyOffset(this.offsetAccelerometer, data.acc))
+      });
+      this.gyroscope.put({
+        time: this.timeTick,
+        axis: new SensorAxis(this.applyOffset(this.offsetGyroscope, data.gyro))
+      });
       this.dataLength++;
     }
 
@@ -91,4 +108,11 @@ export class Sensor extends TypedClass {
     this.state = !this.attemptsList.every((attempt) => !attempt);
   }
 
+  private applyOffset = (offsetParams: SensorAxisProps, data: SensorAxisProps): SensorAxisProps => {
+    return {
+      x: data.x - offsetParams.x,
+      y: data.y - offsetParams.y,
+      z: data.z - offsetParams.z
+    };
+  }
 }

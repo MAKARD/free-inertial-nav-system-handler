@@ -1,17 +1,17 @@
 import { SensorAxisProps, SensorDataProps } from "../sensors";
 
-export function eulterAngles(FK: number) {
+export function toRadians(FK: number) {
     let gx = 0;
     let gy = 0;
     let gz = 0;
 
     return function (data: SensorDataProps, timeStep: number): SensorAxisProps {
-        const { atan, sqrt, PI } = Math;
+        const { sqrt, atan2 } = Math;
         const { acc, gyro } = data;
 
-        const arx = (180 / PI) * atan(acc.x / sqrt(acc.y * acc.y + acc.z * acc.z));
-        const ary = (180 / PI * atan(acc.y / sqrt(acc.x * acc.x + acc.z * acc.z)));
-        const arz = (180 / PI) * atan(sqrt(acc.y * acc.y + acc.z * acc.z) / 2);
+        const arx = atan2(acc.x, sqrt(acc.y * acc.y + acc.z * acc.z));
+        const ary = atan2(acc.y, sqrt(acc.x * acc.x + acc.z * acc.z));
+        const arz = atan2(sqrt(acc.y * acc.y + acc.z * acc.z), 2);
 
         gx += (timeStep * gyro.x);
         gy += (timeStep * gyro.y);

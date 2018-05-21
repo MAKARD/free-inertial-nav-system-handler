@@ -40,7 +40,6 @@ export class DataRecord extends React.Component {
     }
 
     public componentDidMount() {
-        this.dataRecordControl.sensors[0].angles.pull()[0].axis
         this.dataRecordControl.sensors.forEach(({ gyroscope, accelerometer, angles }) => {
             angles.clear();
             gyroscope.clear();

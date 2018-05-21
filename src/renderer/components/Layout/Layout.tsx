@@ -9,10 +9,11 @@ import { Menu } from "../Menu";
 import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
 import { PortsControlProvider } from "../PortsControl";
-import { DataViewPlain, DataViewChart } from "../DataView";
+import { DataViewPlain, DataViewChart, DataViewOrientation } from "../DataView";
 
 import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
 import { LayoutContextTypes, LayoutContext } from "./LayoutContext";
+import { Settings } from "../Settings";
 
 export interface LayoutState {
     isReady: boolean;
@@ -59,6 +60,8 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                     <DataRecord>
                         <Switch>
                             <Route path="/real-time-chart" component={DataViewChart} />
+                            <Route path="/orientation-calc" component={DataViewOrientation} />
+                            <Route path="/settings" component={Settings} />
                             <Redirect to="/real-time-chart" />
                         </Switch>
                     </DataRecord>
