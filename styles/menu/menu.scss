@@ -1,0 +1,98 @@
+.menu-control {
+    $hamburger-height: 22px;
+    $hamburger-height-tablet: 29px;
+    $bar-height: 3px;
+    $bar-height-tablet: 4px;
+  
+    width: 30px;
+    height: $hamburger-height;
+  
+    display: inline-block;
+  
+    position: relative;
+  
+    vertical-align: middle;
+  
+    transform: rotate(0deg);
+
+    margin: 0.8em;
+  
+    cursor: pointer;
+  
+    transition: .5s ease-in-out;
+  
+    &.active-control {
+  
+      > span {
+        background-color: $color-light;
+
+        &:nth-child(1) {
+          top: 0px;
+          left: 2px;
+  
+          transform: rotate(45deg);
+        }
+  
+        &:nth-child(2) {
+          width: 0;
+  
+          opacity: 0;
+        }
+  
+        &:nth-child(3) {
+          top: 21px;
+          left: 2px;
+  
+          transform: rotate(-45deg);
+        }
+      }
+    }
+  
+    > span {
+      display: block;
+  
+      height: 3px;
+      width: 100%;
+  
+      position: absolute;
+  
+      left: 0;
+  
+      border-radius: 2px;
+  
+      background-color: $color-main;
+  
+      opacity: 1;
+  
+      transform: rotate(0deg);
+      transform-origin: left center;
+  
+      transition: .25s ease-in-out;
+
+      &:nth-child(1) {
+  
+        top: 0px;
+      }
+  
+      &:nth-child(2) {
+        top: ($hamburger-height / 2 - ($bar-height / 2));
+      }
+  
+      &:nth-child(3) {
+        top: ($hamburger-height - $bar-height);
+      }
+    }
+  }
+
+.menu-element {
+  background-color: $bg-color-mute;
+
+  > .btn {
+    display: block;
+
+    &:hover {
+      background-color: $bg-color-light;
+      
+    }
+  }
+}

@@ -1,74 +1,135 @@
 import * as React from "react";
 import Select from "react-select";
+import { saveSvgAsPng } from "save-svg-as-png";
 
 import { ViewChart } from "./ViewChart";
 import { Sensor } from "../../../sensors";
 import { DataRecordContextTypes, DataRecordContext } from "../../DataRecord";
+import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
 import { OrientationCalcUnit, EulerKrylovRecalcUnit } from "../../../calculations";
 
 interface DataViewOrientationState {
     activeXSesnor?: Sensor;
     activeYSesnor?: Sensor;
     activeZSesnor?: Sensor;
+    activeMethod: "Euler" | "Poisson";
 }
 
 export class DataViewOrientation extends React.Component<{}, DataViewOrientationState> {
-    public static readonly contextTypes = DataRecordContextTypes;
+    public static readonly contextTypes = {
+        ...DataRecordContextTypes,
+        ...LayoutContextTypes
+    };
+    public static settings: Partial<DataViewOrientationState> = {};
 
-    public readonly context: DataRecordContext;
+    public readonly context: DataRecordContext & LayoutContext;
 
     constructor(props, context: DataRecordContext) {
         super(props, context);
 
         this.state = {
-            activeXSesnor: context.activeSensorsList[0],
-            activeYSesnor: context.activeSensorsList[0],
-            activeZSesnor: context.activeSensorsList[0]
+            activeXSesnor: DataViewOrientation.settings.activeXSesnor || context.activeSensorsList[0],
+            activeYSesnor: DataViewOrientation.settings.activeYSesnor || context.activeSensorsList[0],
+            activeZSesnor: DataViewOrientation.settings.activeZSesnor || context.activeSensorsList[0],
+            activeMethod: "Euler"
         };
     }
 
     public render(): React.ReactNode {
         if (!this.context.activeSensorsList.length) {
-            return <span>No active sensors</span>;
+            return <h3>No active sensors</h3>;
         }
 
         return (
-            <div>
-                <div>
-                    <span>Axis X</span>
-                    <Select
-                        value={this.state.activeXSesnor && this.state.activeXSesnor.id}
-                        onChange={this.getAxisHandleChange("activeXSesnor")}
-                        options={this.mappedSensors}
-                        noResultsText="No sensors"
-                        searchable={false}
-                        clearable={false}
-                    />
+            <div className="tabs">
+                <div className="tabs-header">
+                    <div className="header-item">
+                        <label>Axis X</label>
+                        <Select
+                            value={this.state.activeXSesnor && this.state.activeXSesnor.id}
+                            onChange={this.getAxisHandleChange("activeXSesnor")}
+                            className="btn btn_secondary header-item_content"
+                            options={this.mappedSensors}
+                            noResultsText="No sensors"
+                            searchable={false}
+                            clearable={false}
+                        />
+                    </div>
+                    <div className="header-item">
+                        <label>Axis Y</label>
+                        <Select
+                            value={this.state.activeYSesnor && this.state.activeYSesnor.id}
+                            onChange={this.getAxisHandleChange("activeYSesnor")}
+                            className="btn btn_secondary header-item_content"
+                            options={this.mappedSensors}
+                            noResultsText="No sensors"
+                            searchable={false}
+                            clearable={false}
+                        />
+                    </div>
+                    <div className="header-item">
+                        <label>Axis Z</label>
+                        <Select
+                            value={this.state.activeZSesnor && this.state.activeZSesnor.id}
+                            onChange={this.getAxisHandleChange("activeZSesnor")}
+                            className="btn btn_secondary header-item_content"
+                            options={this.mappedSensors}
+                            noResultsText="No sensors"
+                            searchable={false}
+                            clearable={false}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <span>Axis Y</span>
-                    <Select
-                        value={this.state.activeYSesnor && this.state.activeYSesnor.id}
-                        onChange={this.getAxisHandleChange("activeYSesnor")}
-                        options={this.mappedSensors}
-                        noResultsText="No sensors"
-                        searchable={false}
-                        clearable={false}
-                    />
+                <div className="btn-group">
+                    <button
+                        type="button"
+                        onClick={this.handleMethodChange("Euler")}
+                        className={this.getButtonClassName("Euler")}
+                    >
+                        Euler
+                    </button>
+                    <button
+                        disabled
+                        type="button"
+                        onClick={this.handleMethodChange("Poisson")}
+                        className={this.getButtonClassName("Poisson")}
+                    >
+                        Poisson
+                    </button>
                 </div>
-                <div>
-                    <span>Axis Z</span>
-                    <Select
-                        value={this.state.activeZSesnor && this.state.activeZSesnor.id}
-                        onChange={this.getAxisHandleChange("activeZSesnor")}
-                        options={this.mappedSensors}
-                        noResultsText="No sensors"
-                        searchable={false}
-                        clearable={false}
-                    />
+                <button
+                    type="button"
+                    onClick={this.handleSave}
+                    className="btn btn_secondary right"
+                    disabled={this.context.isPortListened}
+                >
+                    Save
+                </button>
+                <div className="chart-wrap">
+                    <ViewChart sensor={this.calculated} id={this.id}/>
                 </div>
-                <ViewChart sensor={this.calculated} />
             </div>
+        );
+    }
+
+    protected get id(): string {
+        return `${this.state.activeXSesnor.id}${this.state.activeYSesnor.id}${this.state.activeZSesnor.id}`;
+    }
+
+    protected getButtonClassName = (name: DataViewOrientationState["activeMethod"]): string => {
+        return `btn btn_primary${this.state.activeMethod === name ? " active" : ""}`;
+    }
+
+    protected handleMethodChange = (activeMethod: DataViewOrientationState["activeMethod"]) => () => {
+        this.setState({ activeMethod });
+    }
+
+    protected handleSave = (): void => {
+        const element = document.querySelector(".chart > svg");
+        const date = new Date();
+        element && saveSvgAsPng(
+            element,
+            `diagram-${date.toLocaleDateString()}-${date.toLocaleTimeString()}.png`
         );
     }
 
@@ -111,10 +172,12 @@ export class DataViewOrientation extends React.Component<{}, DataViewOrientation
             }));
     }
 
-    protected getAxisHandleChange = (axisName: string) => ({ value }): void => {
+    protected getAxisHandleChange = (axisName: keyof DataViewOrientationState) => ({ value }): void => {
         this.setState({
-            [axisName]: this.context.activeSensorsList.find(({ id }) => id === value)
-        } as any);
+            [axisName as any]: this.context.activeSensorsList.find(({ id }) => id === value)
+        }, () => {
+            DataViewOrientation.settings[axisName] = this.state[axisName];
+        });
     }
 
     protected get mappedSensors() {

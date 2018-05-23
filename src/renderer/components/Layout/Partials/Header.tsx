@@ -30,18 +30,22 @@ export class Header extends React.Component {
                     />
                 </div>
                 <div className="control-menu">
+                    <UpdatePortsList className="btn btn_primary">
+                        Refresh ports
+                    </UpdatePortsList>
+                </div>
+                <div className="control-menu">
                     <PortsListenControl
                         className="btn btn_primary"
                         stageStartChildren="Start"
                         stageStopChildren="Stop"
                     />
                 </div>
-                <div className="control-menu">
-                    <UpdatePortsList className="btn btn_primary">
-                        Refresh ports
-                    </UpdatePortsList>
+                <div className="control-menu right">
+                    <ExpandControl expandId="menu" className="menu-control">
+                        <span /><span /><span />
+                    </ExpandControl>
                 </div>
-                <ExpandControl expandId="menu" className="menu-control"/>
                 <div className={`loader${this.context.isPortBusy ? " active" : ""}`} />
             </header>
         );

@@ -6,6 +6,8 @@
 
         > .Select-control {
             padding: 1em;
+
+            text-align: center;
         }
     }
 
@@ -28,6 +30,8 @@
 
         background-color: $bg-color-mute;
         color: $color-main;
+
+        z-index: $zindex-header;
 
         > .Select-menu {
             

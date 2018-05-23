@@ -8,7 +8,7 @@ import { DataRecordContext, DataRecordContextTypes } from "../../DataRecord";
 import { ViewChart } from "./ViewChart";
 
 export interface DataViewChartState {
-    activeInternalSensor: "accelerometer" | "gyroscope" | "angles";
+    activeInternalSensor: "accelerometer" | "gyroscope";
 }
 
 export class DataViewChart extends React.Component<{}, DataViewChartState> {
@@ -31,29 +31,22 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
                         <button
                             type="button"
                             onClick={this.handleInternalSensorChange("gyroscope")}
-                            className={this.getButtonClassActiveClassName("gyroscope")}
+                            className={this.getButtonClassName("gyroscope")}
                         >
                             Gyroscope
                         </button>
                         <button
                             type="button"
                             onClick={this.handleInternalSensorChange("accelerometer")}
-                            className={this.getButtonClassActiveClassName("accelerometer")}
+                            className={this.getButtonClassName("accelerometer")}
                         >
                             Accelerometer
-                        </button>
-                        <button
-                            type="button"
-                            onClick={this.handleInternalSensorChange("angles")}
-                            className={this.getButtonClassActiveClassName("angles")}
-                        >
-                            Angles
                         </button>
                     </div>
                     <button
                         type="button"
                         onClick={this.handleSave}
-                        className="btn btn_secondary"
+                        className="btn btn_secondary right"
                         disabled={this.context.isPortListened}
                     >
                         Save
@@ -64,7 +57,7 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
         );
     }
 
-    protected getButtonClassActiveClassName = (name: DataViewChartState["activeInternalSensor"]): string => {
+    protected getButtonClassName = (name: DataViewChartState["activeInternalSensor"]): string => {
         return `btn btn_primary${this.state.activeInternalSensor === name ? " active" : ""}`;
     }
 
@@ -86,8 +79,8 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
     protected Headers: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map(({ id }) => (
             <Header
+                className="header-item btn btn_secondary"
                 expandId={`sensor_view_chart_${id}`}
-                className="btn btn_secondary"
                 activeClassName="active"
                 key={id}
             >

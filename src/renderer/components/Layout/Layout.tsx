@@ -3,9 +3,9 @@ import * as Electron from "electron";
 import { Switch, Route, Redirect } from "react-router";
 import { ExpandController, ControlledExpandElement } from "react-expand";
 
-import { Header } from "./Partials";
+import { Header, Menu } from "./Partials";
 
-import { Menu } from "../Menu";
+import { Settings } from "../Settings";
 import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
 import { PortsControlProvider } from "../PortsControl";
@@ -13,7 +13,6 @@ import { DataViewPlain, DataViewChart, DataViewOrientation } from "../DataView";
 
 import { LayoutProps, LayoutPropTypes } from "./LayoutProps";
 import { LayoutContextTypes, LayoutContext } from "./LayoutContext";
-import { Settings } from "../Settings";
 
 export interface LayoutState {
     isReady: boolean;
@@ -53,18 +52,20 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                 <PortsControlProvider onPortChangeState={this.handlePortStateChanged}>
                     <Header />
                 </PortsControlProvider>
-                <ControlledExpandElement expandId="menu">
-                    <Menu />
-                </ControlledExpandElement>
                 <div className="content">
                     <DataRecord>
-                        <Switch>
-                            <Route path="/real-time-chart" component={DataViewChart} />
-                            <Route path="/orientation-calc" component={DataViewOrientation} />
-                            <Route path="/settings" component={Settings} />
-                            <Redirect to="/real-time-chart" />
-                        </Switch>
+                        <div className="main-view">
+                            <Switch>
+                                <Route path="/real-time-chart" component={DataViewChart} />
+                                <Route path="/orientation-calc" component={DataViewOrientation} />
+                                <Route path="/offsets" component={Settings} />
+                                <Redirect to="/real-time-chart" />
+                            </Switch>
+                        </div>
                     </DataRecord>
+                    <ControlledExpandElement expandId="menu" className="menu-element">
+                        <Menu />
+                    </ControlledExpandElement>
                 </div>
             </ExpandController>
         );
