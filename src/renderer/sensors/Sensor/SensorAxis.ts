@@ -8,6 +8,11 @@ export enum Axis {
     z = "z"
 }
 
+export enum SensorType {
+    accelerometer = "accelerometer",
+    gyroscope = "gyroscope"
+}
+
 export interface SensorAxisProps {
     [Axis.x]: number;
     [Axis.y]: number;

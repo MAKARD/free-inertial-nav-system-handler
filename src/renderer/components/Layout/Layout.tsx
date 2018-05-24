@@ -5,7 +5,7 @@ import { ExpandController, ControlledExpandElement } from "react-expand";
 
 import { Header, Menu } from "./Partials";
 
-import { Settings } from "../Settings";
+import { Offsets } from "../Offsets";
 import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
 import { PortsControlProvider } from "../PortsControl";
@@ -58,7 +58,7 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                             <Switch>
                                 <Route path="/real-time-chart" component={DataViewChart} />
                                 <Route path="/orientation-calc" component={DataViewOrientation} />
-                                <Route path="/offsets" component={Settings} />
+                                <Route path="/offsets" component={Offsets} />
                                 <Redirect to="/real-time-chart" />
                             </Switch>
                         </div>

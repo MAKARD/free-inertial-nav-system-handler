@@ -5,13 +5,17 @@ import { Tab, Header, TabsController } from "react-expand";
 
 import { LayoutContextTypes, LayoutContext } from "../../Layout/LayoutContext";
 import { DataRecordContext, DataRecordContextTypes } from "../../DataRecord";
+import { SensorType } from "../../../sensors";
 import { ViewChart } from "./ViewChart";
 
 export interface DataViewChartState {
-    activeInternalSensor: "accelerometer" | "gyroscope";
+    activeInternalSensor: SensorType;
 }
 
 export class DataViewChart extends React.Component<{}, DataViewChartState> {
+    public static lastActiveSensorId: string;
+    public static lastActiveSensorType: SensorType = SensorType.accelerometer;
+
     public static readonly contextTypes = {
         ...DataRecordContextTypes,
         ...LayoutContextTypes
@@ -19,26 +23,26 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
 
     public readonly context: DataRecordContext & LayoutContext;
     public readonly state: DataViewChartState = {
-        activeInternalSensor: "accelerometer"
+        activeInternalSensor: DataViewChart.lastActiveSensorType
     };
 
     public render(): React.ReactNode {
         return (
             <div className="tabs">
-                <TabsController>
+                <TabsController defaultOpened={DataViewChart.lastActiveSensorId}>
                     <this.Headers />
                     <div className="btn-group">
                         <button
                             type="button"
-                            onClick={this.handleInternalSensorChange("gyroscope")}
-                            className={this.getButtonClassName("gyroscope")}
+                            onClick={this.handleInternalSensorChange(SensorType.gyroscope)}
+                            className={this.getButtonClassName(SensorType.gyroscope)}
                         >
                             Gyroscope
                         </button>
                         <button
                             type="button"
-                            onClick={this.handleInternalSensorChange("accelerometer")}
-                            className={this.getButtonClassName("accelerometer")}
+                            onClick={this.handleInternalSensorChange(SensorType.accelerometer)}
+                            className={this.getButtonClassName(SensorType.accelerometer)}
                         >
                             Accelerometer
                         </button>
@@ -71,6 +75,7 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
     }
 
     protected handleInternalSensorChange = (name: DataViewChartState["activeInternalSensor"]) => (): void => {
+        DataViewChart.lastActiveSensorType = name;
         this.setState({
             activeInternalSensor: name
         });
@@ -79,6 +84,7 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
     protected Headers: React.SFC<{}> = (): JSX.Element => {
         const list = this.context.activeSensorsList.map(({ id }) => (
             <Header
+                onClick={this.getHandleHeaderTabClick(`sensor_view_chart_${id}`)}
                 className="header-item btn btn_secondary"
                 expandId={`sensor_view_chart_${id}`}
                 activeClassName="active"
@@ -107,5 +113,9 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
                 {list}
             </React.Fragment>
         );
+    }
+
+    private getHandleHeaderTabClick = (id: string) => () => {
+        DataViewChart.lastActiveSensorId = id;
     }
 }

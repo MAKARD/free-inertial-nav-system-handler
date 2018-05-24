@@ -1,6 +1,6 @@
 import * as PropTypes from "prop-types";
 
-import { SensorAxis, SensorAxisProps, SensorAxisPropTypes } from "./SensorAxis";
+import { SensorAxis, SensorAxisProps, SensorAxisPropTypes, Axis, SensorType } from "./SensorAxis";
 import { toRadians } from "../../calculations/toRadians";
 import { DataRecordControl } from "../DataRecordControl";
 import { DataRepository } from "../DataRepository";
@@ -34,6 +34,8 @@ export interface InternalSensor {
 }
 
 export class Sensor extends TypedClass {
+  public static readonly storageOffsetsKey = "Sensor_offsets";
+
   public dataLength: number = 0;
   public state: boolean = true;
   public id: string;
@@ -42,9 +44,7 @@ export class Sensor extends TypedClass {
   public gyroscope: DataRepository;
   public angles: DataRepository;
 
-  public offsetAccelerometer = { x: 0, y: 0, z: 0 };
-  public offsetGyroscope = { x: 0, y: 0, z: 0 };
-
+  public offsets: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
   private attemptsList: Array<boolean> = [];
   private currentAttempt = 0;
   private timeTick = 0;
@@ -55,6 +55,23 @@ export class Sensor extends TypedClass {
     super(props, { id: PropTypes.string.isRequired });
 
     this.id = props.id;
+
+    let storageData: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
+    try {
+      storageData = JSON.parse(localStorage.getItem(`${Sensor.storageOffsetsKey}_${this.id}`));
+    } catch (error) {
+      // ...
+    }
+
+    if (!storageData) {
+      storageData = {
+        accelerometer: { x: 0, y: 0, z: 0 },
+        gyroscope: { x: 0, y: 0, z: 0 },
+      };
+    }
+
+    this.offsets = storageData;
+
     this.attemptsList = (new Array(DataRecordControl.readAttemptsCount).fill(true));
 
     this.accelerometer = new DataRepository(DataRecordControl.activeRecordLimit, `acc_${this.id}`);
@@ -62,12 +79,8 @@ export class Sensor extends TypedClass {
     this.angles = new DataRepository(DataRecordControl.activeRecordLimit, `angles_${this.id}`);
   }
 
-  public setOffsetGyroscope = (axis: "x" | "y" | "z", value: number): void => {
-    this.offsetGyroscope[axis] = value;
-  }
-
-  public setOffsetAccelerometer = (axis: "x" | "y" | "z", value: number): void => {
-    this.offsetAccelerometer[axis] = value;
+  public saveOffsets = (): void => {
+    localStorage.setItem(`${Sensor.storageOffsetsKey}_${this.id}`, JSON.stringify(this.offsets));
   }
 
   public writeData = (data: SensorDataProps, time: number): void | never => {
@@ -79,11 +92,11 @@ export class Sensor extends TypedClass {
       this.angles.put({ time: this.timeTick, axis: new SensorAxis(this.getRadiansAngels(data, time / 1000)) });
       this.accelerometer.put({
         time: this.timeTick,
-        axis: new SensorAxis(this.applyOffset(this.offsetAccelerometer, data.acc))
+        axis: new SensorAxis(this.applyOffset(this.offsets.accelerometer, data.acc))
       });
       this.gyroscope.put({
         time: this.timeTick,
-        axis: new SensorAxis(this.applyOffset(this.offsetGyroscope, data.gyro))
+        axis: new SensorAxis(this.applyOffset(this.offsets.gyroscope, data.gyro))
       });
       this.dataLength++;
     }
@@ -108,11 +121,12 @@ export class Sensor extends TypedClass {
     this.state = !this.attemptsList.every((attempt) => !attempt);
   }
 
-  private applyOffset = (offsetParams: SensorAxisProps, data: SensorAxisProps): SensorAxisProps => {
-    return {
-      x: data.x - offsetParams.x,
-      y: data.y - offsetParams.y,
-      z: data.z - offsetParams.z
-    };
-  }
+  private applyOffset =
+    (offsetParams: {[P in keyof SensorAxisProps]: string | number}, data: SensorAxisProps): SensorAxisProps => {
+      return {
+        x: data.x - Number(offsetParams.x) || 0,
+        y: data.y - Number(offsetParams.y) || 0,
+        z: data.z - Number(offsetParams.z) || 0
+      };
+    }
 }
