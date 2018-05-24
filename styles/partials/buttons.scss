@@ -93,6 +93,10 @@
     &-group {
         display: inline-block;
 
+        & + .btn {
+            padding: .5em;
+        }
+
         > .btn {
             background-color: transparent;
 

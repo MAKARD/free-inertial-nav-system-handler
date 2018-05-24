@@ -1,8 +1,12 @@
 .tabs {
+    @include clearfix;
+    
     > .tabs-header {
         position: relative;
 
         display: flex;
+
+        margin-bottom: 1em;
 
         &:before {
             content: "";
@@ -18,8 +22,37 @@
             background-color: $bg-color-mute;
         }
 
-        > .btn {
+        .header-item {
             flex-grow: 1;
+
+            position: relative;
+
+            &_content {
+                width: 100%;
+            }
+
+            > label {
+                position: absolute;
+
+                color: $color-mute;
+
+                top: 0;
+                bottom: 0;
+
+                height: 1em;
+
+                margin: auto;
+
+                transition: color .5s ease;
+            }
+
+            &:hover {
+                
+                > label {
+
+                    color: $color-light;
+                }
+            }
         }
     }
 }

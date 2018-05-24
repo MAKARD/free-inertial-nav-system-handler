@@ -1,0 +1,27 @@
+input {
+    color: $color-mute;
+
+    background-color: transparent;
+
+    transition: .5s ease;
+
+    padding: .5em;
+
+    position: relative;
+
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+        color: $color-main;
+
+        background-color: $bg-color-main;
+    }
+
+    &:focus {
+        color: $color-light;
+
+        background-color: $bg-color-light;
+
+        border-bottom-color: $color-light;
+    }
+}

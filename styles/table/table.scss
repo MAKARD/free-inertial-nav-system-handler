@@ -1,0 +1,52 @@
+.table {
+    width: 100%;
+    text-transform: capitalize;
+
+    margin-bottom: 1em;
+
+    > .table-header {
+        display: block;
+
+        width: 100%;
+
+        text-align: center;
+
+        background-color: $bg-color-mute;
+
+        padding: .5em 0;
+    }
+
+    > .table-body {
+        width: 100%;
+
+        display: table;
+        table-layout: fixed;
+
+        background-color: $bg-color-dark;
+
+
+        > .column {
+            display: table-cell;
+
+            border: 1px solid $bg-color-main;
+
+            > .row {
+               display: table;
+               table-layout: fixed;
+
+                width: 100%;
+
+                padding: .5em;
+
+                > .cell {
+                    display: table-cell;
+                    
+                    > * {
+                        display: block;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}

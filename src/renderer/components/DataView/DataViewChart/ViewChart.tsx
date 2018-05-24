@@ -96,9 +96,13 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         });
     }
 
+    public componentDidUpdate() {
+        dispatchEvent(new Event("resize"));
+    }
+
     public render(): React.ReactNode {
         if (!this.state.timeRange) {
-            return <span>No data provided</span>;
+            return <h3>No data provided</h3>;
         }
 
         return (
@@ -178,7 +182,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                 markerLabelStyle={markerLabelStyle(axis)}
                 markerStyle={markerStyle(axis)}
                 event={this.state.tracker}
-                markerLabelAlign="top"
+                markerLabelAlign="bottom"
                 markerRadius={4}
                 column={axis}
                 type="point"

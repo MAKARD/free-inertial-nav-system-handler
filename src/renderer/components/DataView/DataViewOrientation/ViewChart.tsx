@@ -22,8 +22,14 @@ ChartRow.propTypes.trackerTimeFormat = PropTypes.any;
 ChartRow.propTypes.timeFormat = PropTypes.any;
 
 export interface ViewChartProps {
-    sensor: Array<{ axis: SensorAxisProps; time: number }>
+    sensor: Array<{ axis: SensorAxisProps; time: number }>;
+    id: string;
 }
+
+export const ViewChartPropTypes: {[P in keyof ViewChartProps]: PropTypes.Validator<any>} = {
+    sensor: PropTypes.array.isRequired,
+    id: PropTypes.string.isRequired
+};
 
 export interface ViewChartState {
     timeRange?: TimeRange;
@@ -35,6 +41,7 @@ export interface ViewChartState {
 
 export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
     public static readonly contextTypes = LayoutContextTypes;
+    public static readonly propTypes = ViewChartPropTypes;
 
     public series = new TimeSeries({
         name: "orientation",
@@ -51,13 +58,21 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
         this.generateTimeSeries(this.props.sensor);
     }
 
-    public componentWillReceiveProps(nextProps) {
+    public componentWillReceiveProps(nextProps: ViewChartProps) {
+        if (!this.context.isPortListened && this.props.id === nextProps.id) {
+            return;
+        }
+
         this.generateTimeSeries(nextProps.sensor);
+    }
+
+    public componentDidUpdate() {
+        dispatchEvent(new Event("resize"));
     }
 
     public render(): React.ReactNode {
         if (!this.state.timeRange) {
-            return <span>No data provided</span>;
+            return <h3>No data provided</h3>;
         }
 
         return (
@@ -102,12 +117,12 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
 
     protected generateTimeSeries = (sensor): void => {
         this.series = new TimeSeries({
-            name: "orientation",
-            events: getMappedDataAsEvents(sensor as any)
+            events: getMappedDataAsEvents(sensor as any),
+            name: "orientation"
         });
 
         this.setState({
-            timeRange: this.series.range(),
+            timeRange: this.series.range()
         });
     }
 
@@ -136,7 +151,7 @@ export class ViewChart extends React.Component<ViewChartProps, ViewChartState> {
                 markerLabelStyle={markerLabelStyle(axis)}
                 markerStyle={markerStyle(axis)}
                 event={this.state.tracker}
-                markerLabelAlign="top"
+                markerLabelAlign="bottom"
                 markerRadius={4}
                 column={axis}
                 type="point"

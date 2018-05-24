@@ -6,15 +6,18 @@
 
 @import "base/animations";
 @import "base/variables";
+@import "base/helpers";
 @import "base/global";
 @import "base/mixins";
 
 @import "header/header";
 @import "chart/chart";
+@import "table/table";
 @import "tabs/tabs";
+@import "menu/menu";
 
 @import "partials/switcher";
 @import "partials/buttons";
 @import "partials/select";
 @import "partials/loader";
-@import "partials/menu";
+@import "partials/inputs";
