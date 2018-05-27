@@ -14,22 +14,42 @@ export class Offsets extends React.Component {
             <div className="table" key={id}>
                 <span className="table-header">Sensor {id}</span>
                 <div className="table-body">
-                    <this.AxisCalibrationView
-                        sensorType={SensorType.gyroscope}
-                        sensorId={id}
-                    />
-                    <this.AxisCalibrationView
-                        sensorType={SensorType.accelerometer}
-                        sensorId={id}
-                    />
+                    <div className="row">
+                        <this.AxisCalibrationView
+                            sensorType={SensorType.gyroscope}
+                            sensorId={id}
+                        />
+                        <this.AxisCalibrationView
+                            sensorType={SensorType.accelerometer}
+                            sensorId={id}
+                        />
+                    </div>
+                    <div className="row">
+                        <this.FilterCalibrationView sensorId={id} />
+                    </div>
                 </div>
             </div>
         ));
     }
 
+    protected FilterCalibrationView: React.SFC<{ sensorId: string }> = (props): JSX.Element => (
+        <div className="column">
+            <div className="row no-space">
+                <span className="cell">complementary filter</span>
+                <div className="cell no-space">
+                    <input
+                        value={this.getFilterValue(props.sensorId)}
+                        onBlur={this.getBlurFilterHandler(props.sensorId)}
+                        onChange={this.getChangeFilterHandler(props.sensorId)}
+                    />
+                </div>
+            </div>
+        </div>
+    )
+
     protected AxisCalibrationView: React.SFC<{ sensorType: SensorType, sensorId: string }> = (props): JSX.Element => {
         const list = Object.keys(Axis).map((axisName: keyof typeof Axis) => (
-            <span className="cell" key={axisName}>
+            <span className="cell no-space" key={axisName}>
                 <this.AxisCalibrationInput
                     {...props}
                     axis={axisName}
@@ -39,8 +59,8 @@ export class Offsets extends React.Component {
 
         return (
             <div className="column">
-                <span className="row">{props.sensorType}</span>
-                <div className="row">
+                <div className="row no-bottom">{props.sensorType}</div>
+                <div className="row no-space">
                     {list}
                 </div>
             </div>
@@ -55,6 +75,31 @@ export class Offsets extends React.Component {
                 onChange={this.getChangeOffsetHandler(props.axis, props.sensorType, props.sensorId)}
             />
         )
+
+    protected getChangeFilterHandler = (sensorId: string) => (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const founded = this.context.activeSensorsList.find(({ id }) => id === sensorId);
+
+        if (!founded) {
+            return;
+        }
+
+        founded.complementaryFilterCoefficient = event.currentTarget.value.replace(/[^0-9\.\-]/g, "");
+        this.forceUpdate();
+    }
+
+    protected getBlurFilterHandler = (sensorId: string) => (): void => {
+        const founded = this.context.activeSensorsList.find(({ id }) => id === sensorId);
+
+        if (!founded) {
+            return;
+        }
+
+        const value = parseFloat(founded.complementaryFilterCoefficient.toString()) || 0;
+
+        founded.complementaryFilterCoefficient = value <= 1 && value >= 0 ? value : 0;
+        this.forceUpdate();
+        founded.saveFilters();
+    }
 
     protected getChangeOffsetHandler = (axis: keyof typeof Axis, sensorType: SensorType, sensorId: string) =>
         (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -87,5 +132,13 @@ export class Offsets extends React.Component {
         return founded
             ? `${axis}: ${founded.offsets[sensorType][axis].toString()}`
             : `${axis}: 0`;
+    }
+
+    protected getFilterValue = (sensorId: string): string => {
+        const founded = this.context.activeSensorsList.find(({ id }) => id === sensorId);
+
+        return founded
+            ? founded.complementaryFilterCoefficient.toString()
+            : "0";
     }
 }

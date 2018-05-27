@@ -35,10 +35,12 @@ export interface InternalSensor {
 
 export class Sensor extends TypedClass {
   public static readonly storageOffsetsKey = "Sensor_offsets";
+  public static readonly storageFiltersKey = "Sensor_filters";
 
   public dataLength: number = 0;
   public state: boolean = true;
   public id: string;
+  public complementaryFilterCoefficient;
 
   public accelerometer: DataRepository;
   public gyroscope: DataRepository;
@@ -47,30 +49,46 @@ export class Sensor extends TypedClass {
   public offsets: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
   private attemptsList: Array<boolean> = [];
   private currentAttempt = 0;
+  private getRadiansAngels;
   private timeTick = 0;
-
-  private getRadiansAngels = toRadians(0.05);
 
   constructor(props: { id: string }) {
     super(props, { id: PropTypes.string.isRequired });
 
     this.id = props.id;
 
-    let storageData: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
+    let storageOffsetData: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
     try {
-      storageData = JSON.parse(localStorage.getItem(`${Sensor.storageOffsetsKey}_${this.id}`));
+      storageOffsetData = JSON.parse(localStorage.getItem(`${Sensor.storageOffsetsKey}_${this.id}`));
     } catch (error) {
       // ...
     }
 
-    if (!storageData) {
-      storageData = {
+    let storageFiltersData: { complementaryFilterCoefficient: number };
+    try {
+      storageFiltersData = JSON.parse(localStorage.getItem(`${Sensor.storageFiltersKey}_${this.id}`));
+    } catch (error) {
+      // ...
+    }
+
+    if (!storageFiltersData) {
+      storageFiltersData = {
+        complementaryFilterCoefficient: 0.99
+      }
+    }
+
+    this.complementaryFilterCoefficient = storageFiltersData.complementaryFilterCoefficient;
+    this.getRadiansAngels = toRadians(this.complementaryFilterCoefficient);
+
+    if (!storageOffsetData) {
+      storageOffsetData = {
         accelerometer: { x: 0, y: 0, z: 0 },
         gyroscope: { x: 0, y: 0, z: 0 },
+        angles: { x: 0, y: 0, z: 0 }
       };
     }
 
-    this.offsets = storageData;
+    this.offsets = storageOffsetData;
 
     this.attemptsList = (new Array(DataRecordControl.readAttemptsCount).fill(true));
 
@@ -83,21 +101,31 @@ export class Sensor extends TypedClass {
     localStorage.setItem(`${Sensor.storageOffsetsKey}_${this.id}`, JSON.stringify(this.offsets));
   }
 
+  public saveFilters = (): void => {
+    localStorage.setItem(`${Sensor.storageFiltersKey}_${this.id}`, JSON.stringify({
+      complementaryFilterCoefficient: this.complementaryFilterCoefficient
+    }));
+  }
+
   public writeData = (data: SensorDataProps, time: number): void | never => {
     this.checkTypes(data, SensorDataPropTypes);
 
     this.timeTick += time;
 
     if (this.state) {
-      this.angles.put({ time: this.timeTick, axis: new SensorAxis(this.getRadiansAngels(data, time / 1000)) });
-      this.accelerometer.put({
+      const composedData = {
+        gyro: this.applyOffset(this.offsets.gyroscope, data.gyro),
+        acc: this.applyOffset(this.offsets.accelerometer, data.acc)
+      };
+
+      this.accelerometer.put({ time: this.timeTick, axis: new SensorAxis(composedData.acc) });
+      this.gyroscope.put({ time: this.timeTick, axis: new SensorAxis(composedData.gyro) });
+
+      this.angles.put({
         time: this.timeTick,
-        axis: new SensorAxis(this.applyOffset(this.offsets.accelerometer, data.acc))
+        axis: new SensorAxis(this.getRadiansAngels(composedData, time / 1000))
       });
-      this.gyroscope.put({
-        time: this.timeTick,
-        axis: new SensorAxis(this.applyOffset(this.offsets.gyroscope, data.gyro))
-      });
+
       this.dataLength++;
     }
 

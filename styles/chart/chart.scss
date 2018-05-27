@@ -1,5 +1,7 @@
 .chart-wrap {
     margin-top: 1em;
+
+    overflow: hidden;
 }
 
 .chart {
@@ -13,6 +15,14 @@
         path {
             stroke: $color-light !important;
             stroke-width: 2px !important;
+        }
+    }
+
+    > svg {
+        overflow: visible !important;
+
+        rect + g g {
+            clip-path: none !important;
         }
     }
 

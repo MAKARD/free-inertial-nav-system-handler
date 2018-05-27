@@ -41,6 +41,16 @@ export class Header extends React.Component {
                         stageStopChildren="Stop"
                     />
                 </div>
+                <div className="control-menu">
+                    <button
+                        type="button"
+                        onClick={this.handleReload}
+                        className="btn btn_primary"
+                        disabled={this.context.isPortBusy}
+                    >
+                        Reload
+                    </button>
+                </div>
                 <div className="control-menu right">
                     <ExpandControl expandId="menu" className="menu-control">
                         <span /><span /><span />
@@ -50,4 +60,6 @@ export class Header extends React.Component {
             </header>
         );
     }
+
+    protected handleReload = () => location.reload();
 }
