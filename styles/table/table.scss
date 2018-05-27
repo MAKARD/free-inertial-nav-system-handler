@@ -2,7 +2,7 @@
     width: 100%;
     text-transform: capitalize;
 
-    margin-bottom: 1em;
+    margin-bottom: .5em;
 
     > .table-header {
         display: block;
@@ -13,7 +13,7 @@
 
         background-color: $bg-color-mute;
 
-        padding: .5em 0;
+        padding: .4em;
     }
 
     > .table-body {
@@ -24,28 +24,59 @@
 
         background-color: $bg-color-dark;
 
-
-        > .column {
+        .column {
             display: table-cell;
 
             border: 1px solid $bg-color-main;
 
-            > .row {
-               display: table;
-               table-layout: fixed;
+            border-left: 0;
 
+            &:last-child {
+                border-right: 0;
+            }
+        }
+        
+        .row {
+            display: table;
+            table-layout: fixed;
+
+            width: 100%;
+
+            padding: 0 .4em .4em;
+
+            &:first-child {
+                padding-top: 0.4em;
+            }
+
+            &.no-space {
+                padding: 0;
+            }
+
+            &.no-bottom {
+                padding-bottom: 0;
+            }
+         }
+
+         .cell {
+            display: table-cell;
+            
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            height: 100%;
+
+            &:not(input) {
+                padding: 0 .4em;
+            }
+
+            &.no-space {
+                padding: 0;
+            }
+
+            > * {
+                display: block;
                 width: 100%;
-
-                padding: .5em;
-
-                > .cell {
-                    display: table-cell;
-                    
-                    > * {
-                        display: block;
-                        width: 100%;
-                    }
-                }
             }
         }
     }

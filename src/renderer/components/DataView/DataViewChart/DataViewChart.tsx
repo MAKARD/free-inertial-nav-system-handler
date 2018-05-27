@@ -46,6 +46,13 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
                         >
                             Accelerometer
                         </button>
+                        <button
+                            type="button"
+                            onClick={this.handleInternalSensorChange(SensorType.angles)}
+                            className={this.getButtonClassName(SensorType.angles)}
+                        >
+                            Angles
+                        </button>
                     </div>
                     <button
                         type="button"
