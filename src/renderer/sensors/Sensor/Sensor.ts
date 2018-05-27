@@ -49,7 +49,7 @@ export class Sensor extends TypedClass {
   public offsets: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
   private attemptsList: Array<boolean> = [];
   private currentAttempt = 0;
-  private getRadiansAngels;
+  private getRadiansAngles;
   private timeTick = 0;
 
   constructor(props: { id: string }) {
@@ -78,7 +78,7 @@ export class Sensor extends TypedClass {
     }
 
     this.complementaryFilterCoefficient = storageFiltersData.complementaryFilterCoefficient;
-    this.getRadiansAngels = toRadians(this.complementaryFilterCoefficient);
+    this.getRadiansAngles = toRadians(this.complementaryFilterCoefficient);
 
     if (!storageOffsetData) {
       storageOffsetData = {
@@ -123,7 +123,7 @@ export class Sensor extends TypedClass {
 
       this.angles.put({
         time: this.timeTick,
-        axis: new SensorAxis(this.getRadiansAngels(composedData, time / 1000))
+        axis: new SensorAxis(this.getRadiansAngles(composedData, time / 1000))
       });
 
       this.dataLength++;
