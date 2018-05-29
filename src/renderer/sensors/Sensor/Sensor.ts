@@ -56,10 +56,6 @@ export class Sensor extends TypedClass {
   constructor(props: { id: string }) {
     super(props, { id: PropTypes.string.isRequired });
 
-    (window as any).x = 0;
-    (window as any).y = 0;
-    (window as any).z = 0;
-
     this.id = props.id;
 
     let storageOffsetData: {[P in keyof typeof SensorType]: {[K in keyof SensorAxisProps]: string | number}};
