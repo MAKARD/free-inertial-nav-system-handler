@@ -6,7 +6,7 @@ const DataEventMock = function () {
     let formattedData;
 
     const getData = () => new Promise((resolve) => {
-        request.get(process.env.STATIC_DATA, (error, response, body) => resolve(body));
+        request.get(process.env.ROTATE_DATA, (error, response, body) => resolve(body));
     });
 
     this.startEvent = async (port, delay) => {

@@ -4,6 +4,7 @@ import { SensorAxis, SensorAxisProps, SensorAxisPropTypes, Axis, SensorType } fr
 import { toRadians } from "../../calculations/toRadians";
 import { DataRecordControl } from "../DataRecordControl";
 import { DataRepository } from "../DataRepository";
+import { MatrixMath } from "../../calculations";
 import { TypedClass } from "../TypedClass";
 
 export interface SensorProps {
@@ -121,9 +122,25 @@ export class Sensor extends TypedClass {
       this.accelerometer.put({ time: this.timeTick, axis: new SensorAxis(composedData.acc) });
       this.gyroscope.put({ time: this.timeTick, axis: new SensorAxis(composedData.gyro) });
 
+      let rotatedVector = MatrixMath.createColumnVector(this.getRadiansAngles(composedData, time / 1000));
+      switch (this.id) {
+        case "00":
+          rotatedVector = MatrixMath.rotateVector(MatrixMath.directionalCosines(1.2217).RX, rotatedVector);
+          rotatedVector = MatrixMath.rotateVector(MatrixMath.directionalCosines(0.52).RZ, rotatedVector);
+          break;
+        case "10":
+          rotatedVector = MatrixMath.rotateVector(MatrixMath.directionalCosines(1.2217).RX, rotatedVector);
+          rotatedVector = MatrixMath.rotateVector(MatrixMath.directionalCosines(2.094).RZ, rotatedVector);
+          break;
+        case "11":
+          rotatedVector = MatrixMath.rotateVector(MatrixMath.directionalCosines(1.2217).RX, rotatedVector);
+          rotatedVector = MatrixMath.rotateVector(MatrixMath.directionalCosines(-2.094).RZ, rotatedVector);
+          break;
+      }
+
       this.angles.put({
         time: this.timeTick,
-        axis: new SensorAxis(this.getRadiansAngles(composedData, time / 1000))
+        axis: new SensorAxis(MatrixMath.toAngles(rotatedVector))
       });
 
       this.dataLength++;

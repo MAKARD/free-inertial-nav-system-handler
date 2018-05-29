@@ -19,11 +19,11 @@ export interface Matrinx3d {
 }
 
 export class MatrixMath {
-    public static createColumnVector(x: number, y: number, z: number): Column3 {
+    public static createColumnVector(coords: { x: number, y: number, z: number }): Column3 {
         return {
-            r1: x,
-            r2: y,
-            r3: z
+            r1: coords.x,
+            r2: coords.y,
+            r3: coords.z
         };
     }
 
