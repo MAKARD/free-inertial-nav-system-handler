@@ -11,6 +11,7 @@
       true,
       "never"
     ],
+    "jsx-no-multiline-js": false,
     "only-arrow-functions": false,
     "space-before-function-paren": false,
     "jsx-boolean-value": false,

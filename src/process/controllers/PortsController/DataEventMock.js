@@ -5,6 +5,7 @@ const DataEventMock = function () {
     let iterator = 0;
     let formattedData;
 
+    this.customData;
     this.dataType = "ROTATE_DATA";
 
     const getData = () => new Promise((resolve) => {
@@ -12,7 +13,11 @@ const DataEventMock = function () {
     });
 
     this.startEvent = async (port, delay) => {
-        if (!formattedData) {
+        if (this.customData) {
+            formattedData = this.customData;
+        }
+
+        if (!formattedData && this.dataType !== "CUSTOM_DATA") {
             formattedData = (await getData()).split("$");
         }
 

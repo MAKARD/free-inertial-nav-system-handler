@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ExpandControl } from "react-expand";
 
 import {
     PortsControlProviderContextTypes,
@@ -8,7 +9,6 @@ import {
     UpdatePortsList,
     DevModeSwitcher,
 } from "../../PortsControl";
-import { ExpandControl } from "react-expand";
 
 export class Header extends React.Component {
     public static readonly contextTypes = PortsControlProviderContextTypes;
@@ -35,21 +35,21 @@ export class Header extends React.Component {
                     </UpdatePortsList>
                 </div>
                 <div className="control-menu">
+                    <button
+                        type="button"
+                        className="btn btn_reload"
+                        onClick={this.handleReload}
+                        disabled={this.context.isPortBusy}
+                    >
+                        Reload
+                    </button>
+                </div>
+                <div className="control-menu">
                     <PortsListenControl
                         className="btn btn_primary"
                         stageStartChildren="Start"
                         stageStopChildren="Stop"
                     />
-                </div>
-                <div className="control-menu">
-                    <button
-                        type="button"
-                        onClick={this.handleReload}
-                        className="btn btn_primary"
-                        disabled={this.context.isPortBusy}
-                    >
-                        Reload
-                    </button>
                 </div>
                 <div className="control-menu right">
                     <ExpandControl expandId="menu" className="menu-control">

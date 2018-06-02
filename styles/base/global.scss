@@ -41,4 +41,11 @@ body {
     width: 100%;
 
     overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+::-webkit-input-placeholder {
+    color: $color-main;
 }
