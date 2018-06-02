@@ -10,6 +10,10 @@ export class Offsets extends React.Component {
     public readonly context: DataRecordContext;
 
     public render(): React.ReactNode {
+        if (!this.context.activeSensorsList.length) {
+            return <h3>No active sensors</h3>;
+        }
+
         return this.context.activeSensorsList.map(({ id }) => (
             <div className="table" key={id}>
                 <span className="table-header">Sensor {id}</span>

@@ -40,6 +40,7 @@ export class Sensor extends TypedClass {
 
   public dataLength: number = 0;
   public state: boolean = true;
+  public fakeState: boolean = true;
   public id: string;
   public complementaryFilterCoefficient;
 
@@ -109,6 +110,10 @@ export class Sensor extends TypedClass {
   }
 
   public writeData = (data: SensorDataProps, time: number): void | never => {
+    if (!this.fakeState) {
+      return;
+    }
+
     this.checkTypes(data, SensorDataPropTypes);
 
     this.timeTick += time;

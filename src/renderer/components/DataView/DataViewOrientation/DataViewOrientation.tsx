@@ -171,7 +171,8 @@ export class DataViewOrientation extends React.Component<{}, DataViewOrientation
     }
 
     protected get isRefrenceAvailable(): boolean {
-        return !!this.context.activeSensorsList.find(({ id }) => id === "01");
+        return !!this.context.activeSensorsList.find(({ id }) => id === "01")
+            && this.reference.length === this.composedSensor.length;
     }
 
     protected get composedSensor() {
