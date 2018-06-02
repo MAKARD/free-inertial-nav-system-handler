@@ -62,7 +62,6 @@ export class DataViewOrientation extends React.Component<{}, DataViewOrientation
                         Delta
                     </button>
                 </div>
-                <span className="single-label">Average Δ:&nbsp;{this.deltaLabel}</span>
                 <button
                     type="button"
                     onClick={this.handleSave}
@@ -71,6 +70,7 @@ export class DataViewOrientation extends React.Component<{}, DataViewOrientation
                 >
                     Save
                 </button>
+                <span className="single-label">Average Δ:&nbsp;{this.deltaLabel}</span>
                 <div className="chart-wrap">
                     <ViewChart
                         sensor={this.state.activeView === "Actual" ? this.calculated : this.delta}

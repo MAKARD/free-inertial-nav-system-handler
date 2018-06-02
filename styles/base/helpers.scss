@@ -9,5 +9,18 @@
 .single-label {
     display: inline-block;
     
-    margin: 1em;
+    margin: .5em 1em;
+
+    &:first-child {
+        margin-left: 0;
+    }
+}
+
+.flex-container-row {
+    display: flex;
+
+    flex-direction: row;
+    
+    margin-top: 3em;
+
 }

@@ -89,13 +89,64 @@ const PortsController = function () {
 
     setDevDataType = (event, type) => {
         DataEventMock.dataType = type;
+        DataEventMock.customData = undefined;
     }
 
     getDevDataType = (event) => {
         event.returnValue = DataEventMock.dataType;
     }
 
+    setCustomDevData = (event, data) => {
+        let validData;
+        try {
+            validData = data.split("$");
+
+            validData.forEach((dataItem) => {
+                const parsedData = JSON.parse(dataItem);
+
+                parsedData.forEach(({ id, time, data }) => {
+                    if (!["00", "01", "10", "11"].find((name) => id === name)) {
+                        throw new Error("Provided data contains invalid ID. Valid is '00', '11', '10', '01'");
+                    }
+
+                    if (Number.isNaN(Number(time))) {
+                        throw new Error("Provided data contains invalid time");
+                    }
+
+                    if (!data) {
+                        throw new Error("Provided data does not contains 'data' field");
+                    }
+
+                    if (!data.acc) {
+                        throw new Error("Provided data does not contains 'data.acc' field ");
+                    }
+
+                    if (!data.gyro) {
+                        throw new Error("Provided data does not contains 'data.gyro' field ");
+                    }
+
+                    ["x", "y", "z"].map((name) => {
+                        if (Number.isNaN(Number(data.acc[name]))) {
+                            throw new Error(`Provided data contains not numeric 'data.acc.${name}' field`);
+                        }
+
+                        if (Number.isNaN(Number(data.gyro[name]))) {
+                            throw new Error(`Provided data contains not numeric 'data.gyro.${name}' field`);
+                        }
+                    });
+                })
+            });
+        } catch (error) {
+            DataEventMock.dataType = "ROTATE_DATA";
+            return event.sender.send("catch-custom-data-error", error.message);
+        }
+
+        DataEventMock.customData = validData;
+        DataEventMock.dataType = "CUSTOM_DATA";
+    }
+
     this.bindEvents = () => {
+        ipcMain.on("set-custom-dev-data", setCustomDevData);
         ipcMain.on("set-dev-data-type", setDevDataType);
         ipcMain.on("get-dev-data-type", getDevDataType);
         ipcMain.on("available-ports", availablePorts);
@@ -105,6 +156,7 @@ const PortsController = function () {
     };
 
     this.unbindEvents = () => {
+        ipcMain.removeListener("set-custom-dev-data", setCustomDevData);
         ipcMain.removeListener("set-dev-data-type", setDevDataType);
         ipcMain.removeListener("available-ports", availablePorts);
         ipcMain.removeListener("dev-mode", toggleDevMode);
