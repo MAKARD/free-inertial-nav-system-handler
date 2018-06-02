@@ -32,7 +32,7 @@ const PortsController = function () {
             SerialPort.Binding = SerialPort.MockBinding;
             SerialPort.Binding.createPort("/dev/COM1", { echo: true, record: true });
             SerialPort.Binding.createPort("/dev/COM2", { echo: true, record: true });
-            
+
         } else {
             SerialPort.Binding && SerialPort.Binding.reset();
             SerialPort.Binding = SerialPort.originBinding;
@@ -64,7 +64,7 @@ const PortsController = function () {
 
     sendData = (event) => (data) => {
         const currentData = Buffer.from(data).toString().trim();
-        
+
         if (currentData !== "$") {
             message += currentData;
         } else {
@@ -87,7 +87,17 @@ const PortsController = function () {
         createBridge(event, newPort)();
     };
 
+    setDevDataType = (event, type) => {
+        DataEventMock.dataType = type;
+    }
+
+    getDevDataType = (event) => {
+        event.returnValue = DataEventMock.dataType;
+    }
+
     this.bindEvents = () => {
+        ipcMain.on("set-dev-data-type", setDevDataType);
+        ipcMain.on("get-dev-data-type", getDevDataType);
         ipcMain.on("available-ports", availablePorts);
         ipcMain.on("dev-mode", toggleDevMode);
         ipcMain.on("close-port", closePort);
@@ -95,6 +105,7 @@ const PortsController = function () {
     };
 
     this.unbindEvents = () => {
+        ipcMain.removeListener("set-dev-data-type", setDevDataType);
         ipcMain.removeListener("available-ports", availablePorts);
         ipcMain.removeListener("dev-mode", toggleDevMode);
         ipcMain.removeListener("close-port", closePort);

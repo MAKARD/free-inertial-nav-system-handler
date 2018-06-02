@@ -5,13 +5,15 @@ const DataEventMock = function () {
     let iterator = 0;
     let formattedData;
 
+    this.dataType = "ROTATE_DATA";
+
     const getData = () => new Promise((resolve) => {
-        request.get(process.env.ROTATE_DATA, (error, response, body) => resolve(body));
+        request.get(process.env[this.dataType], (error, response, body) => resolve(body));
     });
 
     this.startEvent = async (port, delay) => {
         if (!formattedData) {
-           formattedData = (await getData()).split("$");
+            formattedData = (await getData()).split("$");
         }
 
         if (typeof delay !== "number") {
@@ -24,6 +26,12 @@ const DataEventMock = function () {
 
         await new Promise((resolve) => {
             timer = setTimeout(() => {
+                if (!formattedData) {
+                    iterator = 0;
+                    resolve();
+                    return;
+                }
+
                 if (iterator === formattedData.length) {
                     iterator = 0;
                 }
@@ -52,6 +60,7 @@ const DataEventMock = function () {
         iterator = 0;
         clearInterval(timer);
         timer = undefined;
+        formattedData = undefined;
     }
 }
 

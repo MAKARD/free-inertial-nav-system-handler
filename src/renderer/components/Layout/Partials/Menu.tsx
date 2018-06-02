@@ -14,6 +14,9 @@ export class Menu extends React.Component {
                 <NavLink to="/offsets" className="btn btn_secondary">
                     Offsets
                 </NavLink>
+                <NavLink to="/simulation" className="btn btn_secondary">
+                    Simulation
+                </NavLink>
             </React.Fragment>
         );
     }

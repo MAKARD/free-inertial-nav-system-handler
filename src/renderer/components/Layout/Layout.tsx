@@ -6,6 +6,7 @@ import { ExpandController, ControlledExpandElement } from "react-expand";
 import { Header, Menu } from "./Partials";
 
 import { Offsets } from "../Offsets";
+import { Simulation } from "../Simulation";
 import { DataRecord } from "../DataRecord";
 import { PerfomanceStat } from "../PerfomanceStat";
 import { PortsControlProvider } from "../PortsControl";
@@ -58,6 +59,7 @@ export class Layout extends React.Component<LayoutProps, LayoutState> {
                             <Switch>
                                 <Route path="/real-time-chart" component={DataViewChart} />
                                 <Route path="/orientation-calc" component={DataViewOrientation} />
+                                <Route path="/simulation" component={Simulation} />
                                 <Route path="/offsets" component={Offsets} />
                                 <Redirect to="/real-time-chart" />
                             </Switch>

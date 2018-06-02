@@ -6,6 +6,9 @@ export enum ipcRequests {
     openPort = "open-port",
     devMode = "dev-mode",
 
+    setDevDataType = "set-dev-data-type",
+    getDevDataType = "get-dev-data-type",
+
     // memory
     memoryUsage = "memory-usage"
 };

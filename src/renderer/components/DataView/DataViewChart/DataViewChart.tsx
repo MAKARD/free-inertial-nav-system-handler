@@ -27,6 +27,10 @@ export class DataViewChart extends React.Component<{}, DataViewChartState> {
     };
 
     public render(): React.ReactNode {
+        if (!this.context.activeSensorsList.length) {
+            return <h3>No active sensors</h3>;
+        }
+
         return (
             <div className="tabs">
                 <TabsController defaultOpened={DataViewChart.lastActiveSensorId}>
